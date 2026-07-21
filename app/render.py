@@ -72,13 +72,23 @@ def _build_slots(imp: dict) -> tuple[list, list]:
 
 def render_sheet_html(d: dict, imposition: dict | None = None) -> str:
     imp = {"back_swap": True, "back_rotate": False, "trim_first_mm": 4,
-           "cut_marks": True, "center_lines": True, "binding_margin_mm": 0}
+           "cut_marks": True, "center_lines": True, "binding_margin_mm": 0,
+           "page_margin_mm": 5}
     if imposition:
         imp.update(imposition)
     front, back = _build_slots(imp)
+    # Sidmarginalen styr paneldimensionerna direkt: vid margin=0 blir varje
+    # panel äkta A6 (105x148.5mm) och 2x2 fyller hela A4 marginalfritt.
+    margin = imp["page_margin_mm"]
+    content_w = round(210 - 2 * margin, 3)
+    content_h = round(297 - 2 * margin, 3)
+    panel_w = round(content_w / 2, 3)
+    panel_h = round(content_h / 2, 3)
     tmpl = _env.get_template("sheet.html")
     return tmpl.render(d=d, imp=imp, front_slots=front, back_slots=back,
-                       logo_src=_logo_data_uri(), print_css=_print_css())
+                       logo_src=_logo_data_uri(), print_css=_print_css(),
+                       page_margin_mm=margin, content_w=content_w, content_h=content_h,
+                       panel_w=panel_w, panel_h=panel_h)
 
 
 def render_preview_html(d: dict) -> str:

@@ -3,6 +3,11 @@
 <head>
 <meta charset="utf-8">
 <style>{{ print_css }}</style>
+<style>
+@page { margin: {{ page_margin_mm }}mm; }
+.sheet { width: {{ content_w }}mm; height: {{ content_h }}mm; }
+:root { --panel-w: {{ panel_w }}mm; --panel-h: {{ panel_h }}mm; }
+</style>
 </head>
 <body class="{% if d.display and d.display.four_color %}fourcolor{% endif %}">
 {% import "panels/_macros.html" as p %}
