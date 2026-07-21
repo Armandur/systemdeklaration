@@ -28,8 +28,9 @@ def _logo_data_uri() -> str:
     return "data:image/png;base64," + base64.b64encode(raw).decode()
 
 
-@lru_cache(maxsize=1)
 def _print_css() -> str:
+    # Ej cachad: läses fritt från disk så CSS-ändringar syns direkt utan
+    # serveromstart (filen är liten). Logon nedan är fortsatt cachad.
     return (config.BASE_DIR / "static" / "print.css").read_text(encoding="utf-8")
 
 
