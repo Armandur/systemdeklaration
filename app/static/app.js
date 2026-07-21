@@ -80,6 +80,13 @@ for (const el of fields) {
   });
 }
 
+// Kör om autosize på alla textareas vid omstorlek (rotation / responsivt läge),
+// annars blir höjder uträknade vid en bredd stale när bredden ändras.
+const rerunAutosizeAll = debounce(() => {
+  for (const el of fields) if (el.tagName === "TEXTAREA") autosize(el);
+}, 150);
+window.addEventListener("resize", rerunAutosizeAll);
+
 // ---- färgpalett: infoga symbol vid markören i senast fokuserade fält ----
 function insertAtCursor(el, text) {
   const start = el.selectionStart ?? el.value.length;
