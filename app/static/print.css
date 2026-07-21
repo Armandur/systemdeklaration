@@ -54,7 +54,7 @@ html, body { margin: 0; padding: 0; }
 .op-table thead th { font-size: 6.5pt; font-weight: 700; vertical-align: bottom; }
 /* Vertikala kolumnrubriker: rotera en span 90 grader (läses nerifrån och upp),
    fast radhöjd så texten får plats. Transform funkar lika i WeasyPrint och webb. */
-.op-table th.rot { height: 15mm; padding: 1mm 0; text-align: center; vertical-align: middle; }
+.op-table th.rot { height: 7mm; padding: 1mm 0; text-align: center; vertical-align: middle; }
 .op-table th.rot .vtext {
   display: inline-block;
   transform: rotate(-90deg);
@@ -68,6 +68,9 @@ html, body { margin: 0; padding: 0; }
 .op-table .c-kort { width: 6mm; text-align: center; font-size: 8pt; }
 .op-table .c-opp { width: 24mm; }
 .op-table .c-svar { font-size: 6.2pt; line-height: 1.05; }
+/* Fördela panelhöjden på dataraderna (height:100% sträcker inte raderna i
+   WeasyPrint) så tabellen fyller A6-panelen istället för tomrum under. */
+.op-table tbody td { padding-top: 2mm; padding-bottom: 2mm; }
 
 /* ---- Sektioner (försvar, utspel, markeringar) ---- */
 .sect { margin-bottom: 1.6mm; }
