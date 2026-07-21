@@ -28,10 +28,13 @@ def _logo_data_uri() -> str:
     return "data:image/png;base64," + base64.b64encode(raw).decode()
 
 
-def _print_css() -> str:
+def _print_css() -> Markup:
     # Ej cachad: läses fritt från disk så CSS-ändringar syns direkt utan
     # serveromstart (filen är liten). Logon nedan är fortsatt cachad.
-    return (config.BASE_DIR / "static" / "print.css").read_text(encoding="utf-8")
+    # Markup så CSS:en INTE HTML-escapas när den injiceras i <style> (annars
+    # bryts font-family: "DejaVu Sans" av autoescaping -> serif-fallback).
+    css = (config.BASE_DIR / "static" / "print.css").read_text(encoding="utf-8")
+    return Markup(css)
 
 
 # Kort 1 = omslag (fram) + öppningsbud (bak). Kort 2 = försvar (fram) +
