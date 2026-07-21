@@ -23,5 +23,5 @@
 
 ## Referens
 
-Källmaterial i `/mnt/vmworkspace/systemdeklaration/`:
-DeklarationElisabeth02.docx/.pdf, skiss.jpg (pappas markeringar), SBF-logo.
+Källmaterial (lokalt, ej i repot) i `/mnt/vmworkspace/systemdeklaration/`:
+ifylld SBF-blankett (docx/pdf), handskiss med markeringar, SBF-logo.

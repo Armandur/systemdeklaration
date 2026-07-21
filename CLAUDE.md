@@ -30,7 +30,7 @@ av A6-paneler = två exemplar per ark, skärs till A6-kort för laminering).
         print.css        # panel-/A6-stil, delas av preview och PDF
         app.css, app.js, utils.js, tokens.css, pico.min.css, sbf-logo.png
     data/
-      sample.json        # Elisabeth/Johan-exempel (referens från task-256)
+      sample.json        # fiktivt exempel (Anna/Bertil) för demo och tester
 
 ## Centrala designbeslut
 
