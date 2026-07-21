@@ -297,6 +297,18 @@ document.getElementById("btnDelete").addEventListener("click", async () => {
 
 // (temaväxlaren hanteras av theme.js)
 
+// ---- 293: håll --header-h i synk med topbarens verkliga höjd (den wrappar) ----
+function trackTopbarHeight() {
+  const topbar = document.querySelector(".topbar");
+  if (!topbar) return;
+  const update = () => {
+    document.documentElement.style.setProperty("--header-h", topbar.offsetHeight + "px");
+  };
+  update();
+  new ResizeObserver(update).observe(topbar);
+}
+trackTopbarHeight();
+
 // ---- init ----
 const restored = restoreLocal();
 stateToForm();
