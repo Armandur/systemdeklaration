@@ -13,8 +13,15 @@
   --red: #d40000;
 }
 
-.suit-red { color: var(--red); }
-.suit-black { color: var(--ink); }
+/* Tvåfärgslek (default): ruter/hjärter röda, klöver/spader svarta. */
+.suit-d, .suit-h { color: var(--red); }
+.suit-c, .suit-s { color: var(--ink); }
+/* Fyrfärgslek: klöver grön, ruter blå, hjärter röd, spader svart.
+   Färger från chicago/kortspelshornan. */
+.fourcolor .suit-c { color: #1f7a44; }
+.fourcolor .suit-d { color: #2059a8; }
+.fourcolor .suit-h { color: #c23b30; }
+.fourcolor .suit-s { color: #1b1b1b; }
 
 /* Nolla webbläsarens default-marginaler så arket inte spiller till ny sida. */
 html, body { margin: 0; padding: 0; }

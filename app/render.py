@@ -13,7 +13,7 @@ _env = Environment(
 )
 def _suit_only(s: str) -> Markup:
     glyph = config.SUIT_GLYPH.get(s, s)
-    cls = "suit-red" if glyph in config.RED_SUITS else "suit-black"
+    cls = config.SUIT_CLASS.get(glyph, "")
     return Markup(f'<span class="{cls}">{glyph}</span>')
 
 

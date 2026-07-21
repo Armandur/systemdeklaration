@@ -51,5 +51,6 @@
     "styrka": "Schneider",
     "langd": "Malmö",
     "ovriga": "Lavinthal"
-  }
+  },
+  "display": { "four_color": false }
 }

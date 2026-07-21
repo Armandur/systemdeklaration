@@ -25,9 +25,16 @@ function expandSuits(v) {
 // ---- bind formulär <-> state ----
 const fields = [...document.querySelectorAll("[data-path]")];
 function stateToForm() {
-  for (const el of fields) el.value = getPath(state, el.dataset.path) ?? "";
+  for (const el of fields) {
+    if (el.type === "checkbox") el.checked = !!getPath(state, el.dataset.path);
+    else el.value = getPath(state, el.dataset.path) ?? "";
+  }
 }
 function formToStateField(el) {
+  if (el.type === "checkbox") {
+    setPath(state, el.dataset.path, el.checked);
+    return;
+  }
   let v = el.value;
   if (v.includes("/")) {
     const exp = expandSuits(v);
@@ -39,13 +46,15 @@ function formToStateField(el) {
 // ---- senast fokuserade fält (för färgpaletten) ----
 let lastField = null;
 for (const el of fields) {
+  if (el.type === "checkbox") continue;
   el.addEventListener("focus", () => { lastField = el; });
 }
 
 const schedulePreview = debounce(renderPreview, 350);
 const scheduleAutosave = debounce(persistLocal, 500);
 for (const el of fields) {
-  el.addEventListener("input", () => {
+  const evt = el.type === "checkbox" ? "change" : "input";
+  el.addEventListener(evt, () => {
     formToStateField(el);
     if (exactMode) setLiveMode();
     schedulePreview();

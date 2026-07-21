@@ -14,7 +14,7 @@
   figure { margin: 0; }
 </style>
 </head>
-<body>
+<body class="{% if d.display and d.display.four_color %}fourcolor{% endif %}">
 {% import "panels/_macros.html" as p %}
 <div class="preview-grid">
   <figure><div class="pcard">{{ p.panel_cover(d, logo_src) }}</div><figcaption class="pcap">Kort 1 - fram (omslag)</figcaption></figure>

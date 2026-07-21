@@ -83,6 +83,11 @@ table.form-op textarea { margin: 0; min-height: 1.8rem; width: 100%; }
 }
 .suitbtn.red { --pico-color: var(--svk-red); }
 .suitbtn:hover { --pico-border-color: var(--svk-accent); }
+.fourcolor-toggle {
+  display: inline-flex; align-items: center; gap: .35rem; margin: 0 0 0 auto;
+  font-size: .8rem; white-space: nowrap;
+}
+.fourcolor-toggle input { margin: 0; }
 
 /* Överflödesvarning */
 .warnbox {
@@ -99,7 +104,9 @@ table.form-op textarea { margin: 0; min-height: 1.8rem; width: 100%; }
   border-radius: 6px; background: #e9e9ef; }
 @media (max-width: 900px) { .previewpane { position: static; } #previewFrame { height: 60vh; } }
 
-.suit-red { color: var(--svk-red); }
+/* Färgsymboler i formuläret (editorn hålls tvåfärgad för läsbarhet). */
+.suit-d, .suit-h { color: var(--svk-red); }
+.suit-c, .suit-s { color: var(--pico-color); }
 
 /* Spinner + toast */
 .spinner { display: inline-block; width: 1em; height: 1em; border: 2px solid currentColor;

@@ -6,8 +6,10 @@ ROOT_DIR = BASE_DIR.parent
 DATA_DIR = ROOT_DIR / "data"
 DB_PATH = DATA_DIR / "systemdeklaration.db"
 
-# Färgsymboler. Röd: ruter/hjärter. Svart: klöver/spader.
+# Färgsymboler. Varje färg får en egen klass (suit-c/d/h/s); CSS avgör om
+# tvåfärgs- eller fyrfärgspalett gäller (styrt av .fourcolor på behållaren).
 SUIT_GLYPH = {"C": "♣", "D": "♦", "H": "♥", "S": "♠"}
+SUIT_CLASS = {"♣": "suit-c", "♦": "suit-d", "♥": "suit-h", "♠": "suit-s"}
 RED_SUITS = {"♦", "♥"}
 BLACK_SUITS = {"♣", "♠"}
 
@@ -51,18 +53,18 @@ def empty_declaration() -> dict:
         "utspel": {"mot_farg": "", "mot_nt": ""},
         "vandor": {"genom_spelforaren": "", "i_partnerns_farg": ""},
         "markeringar": {"styrka": "", "langd": "", "ovriga": ""},
+        "display": {"four_color": False},
     }
 
 
 def render_suits(text: str) -> str:
-    """Wrappa färgsymboler i span för färgning. Escapar övrig text."""
+    """Wrappa färgsymboler i span med per-färg-klass. Escapar övrig text."""
     from markupsafe import escape
     out = []
     for ch in text or "":
-        if ch in RED_SUITS:
-            out.append(f'<span class="suit-red">{ch}</span>')
-        elif ch in BLACK_SUITS:
-            out.append(f'<span class="suit-black">{ch}</span>')
+        cls = SUIT_CLASS.get(ch)
+        if cls:
+            out.append(f'<span class="{cls}">{ch}</span>')
         else:
             out.append(str(escape(ch)))
     return "".join(out).replace("\n", "<br>")
@@ -79,6 +81,6 @@ def render_bud(token: str) -> str:
     parts = [f'{level}']
     for s in suits:
         glyph = SUIT_GLYPH.get(s, s)
-        cls = "suit-red" if glyph in RED_SUITS else "suit-black"
+        cls = SUIT_CLASS.get(glyph, "")
         parts.append(f'<span class="{cls}">{glyph}</span>')
     return "".join(parts)

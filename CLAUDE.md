@@ -48,8 +48,11 @@ av A6-paneler = två exemplar per ark, skärs till A6-kort för laminering).
   hamnar bakom vilken framsida beror på skrivarens duplex-vändning. `_build_slots`
   tar `back_swap`/`back_rotate`/`trim_first_mm`/`cut_marks`; default long-edge
   (swap=on, byter kolumn inom raden). Verifieras fysiskt av användaren.
-- **Färgfärgning:** `config.render_suits()` wrappar ♣♠ svart, ♦♥ rött. Filter
-  `suits`/`bud`/`bud_suit` i `render.py` (och `bud` i `pages.py`).
+- **Färgfärgning:** `config.render_suits()` wrappar varje färg i en per-färg-klass
+  (`suit-c/d/h/s`). Filter `suits`/`bud`/`bud_suit` i `render.py` (och `bud` i
+  `pages.py`). print.css ger tvåfärg som default; klassen `.fourcolor` på behållaren
+  (styrd av `payload.display.four_color`) slår om till fyrfärgslek (♣ grön, ♦ blå,
+  ♥ röd, ♠ svart). Sätts via kryssrutan i palettraden, sparas per deklaration.
 
 ## Pappas fyra fynd (från task-256, alla åtgärdade)
 
