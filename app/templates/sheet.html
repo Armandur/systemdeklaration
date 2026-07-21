@@ -16,7 +16,7 @@
 {% endmacro %}
 
 {% macro slot(s, cut=True) %}
-  <div class="slot {% if s.rot %}rot180{% endif %}">
+  <div class="slot {% if s.rot %}rot180{% endif %}"{% if imp.binding_margin_mm %} style="--gutter-{{ s.gutter }}: {{ imp.binding_margin_mm }}mm"{% endif %}>
     {{ render_kind(s.kind) }}
     {% if cut %}
       <span class="cmark" style="top:-2mm;left:-2mm"></span>

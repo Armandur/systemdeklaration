@@ -41,10 +41,10 @@ def _build_slots(imp: dict) -> tuple[list, list]:
     trim = imp["trim_first_mm"] if imp.get("trim_first_mm") else 0
     # Framsida, radvis: [kort1=omslag, kort2=försvar] x 2 exemplar.
     front = [
-        {"kind": "cover", "trim": trim, "rot": False},
-        {"kind": "defense", "trim": 0, "rot": False},
-        {"kind": "cover", "trim": trim, "rot": False},
-        {"kind": "defense", "trim": 0, "rot": False},
+        {"kind": "cover", "trim": trim, "rot": False, "gutter": "left"},
+        {"kind": "defense", "trim": 0, "rot": False, "gutter": "left"},
+        {"kind": "cover", "trim": trim, "rot": False, "gutter": "left"},
+        {"kind": "defense", "trim": 0, "rot": False, "gutter": "left"},
     ]
     # Baksidorna som ska ligga bakom: kort1->öppningsbud, kort2->utspel.
     if imp.get("back_swap", True):
@@ -53,8 +53,16 @@ def _build_slots(imp: dict) -> tuple[list, list]:
     else:
         base = ["opening", "leads", "opening", "leads"]
     rot = bool(imp.get("back_rotate", False))
-    back = [{"kind": k, "trim": trim if k == "opening" else 0, "rot": rot}
-            for k in base]
+    # Bindningen sitter fysiskt vänster på framsidan. Vid default duplex
+    # (long-edge, back_rotate=False) speglas baksidan i höger/vänster, så
+    # samma fysiska kant motsvaras av HÖGER i back-slotens koordinatsystem.
+    # Känd begränsning: om back_rotate (kortsidesvändning) används roteras
+    # panelen 180° via CSS (.slot.rot180 .panel), vilket speglar layouten
+    # ytterligare ett steg - gutter-sidan nedan ("right") stämmer då
+    # eventuellt inte längre mot den fysiska bindningskanten och kan behöva
+    # justeras separat. Utanför denna task.
+    back = [{"kind": k, "trim": trim if k == "opening" else 0, "rot": rot,
+             "gutter": "right"} for k in base]
     if rot:
         # Kortsidesvändning: hela baksidan roteras, vänd ordningen.
         back = list(reversed(back))
@@ -63,7 +71,7 @@ def _build_slots(imp: dict) -> tuple[list, list]:
 
 def render_sheet_html(d: dict, imposition: dict | None = None) -> str:
     imp = {"back_swap": True, "back_rotate": False, "trim_first_mm": 4,
-           "cut_marks": True, "center_lines": True}
+           "cut_marks": True, "center_lines": True, "binding_margin_mm": 0}
     if imposition:
         imp.update(imposition)
     front, back = _build_slots(imp)

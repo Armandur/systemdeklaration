@@ -116,9 +116,10 @@ function imposition() {
     trim_first_mm: Number(document.getElementById("impTrim").value) || 0,
     cut_marks: document.getElementById("impCut").checked,
     center_lines: document.getElementById("impCenter").checked,
+    binding_margin_mm: Number(document.getElementById("impBinding").value) || 0,
   };
 }
-for (const id of ["impSwap", "impRotate", "impTrim", "impCut", "impCenter"]) {
+for (const id of ["impSwap", "impRotate", "impTrim", "impCut", "impCenter", "impBinding"]) {
   document.getElementById(id).addEventListener("change", () => {
     if (exactMode) refreshExact();
   });

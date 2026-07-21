@@ -31,7 +31,7 @@ html, body { margin: 0; padding: 0; }
   box-sizing: border-box;
   width: var(--panel-w);
   height: var(--panel-h);
-  padding: var(--pad);
+  padding: var(--pad) calc(var(--pad) + var(--gutter-right, 0mm)) var(--pad) calc(var(--pad) + var(--gutter-left, 0mm));
   background: #fff;
   color: var(--ink);
   font-family: "DejaVu Sans", Arial, sans-serif;
