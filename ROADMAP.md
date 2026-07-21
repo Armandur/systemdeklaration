@@ -18,7 +18,10 @@
   förhandsvisning på skärm är inte 1:1 med papper.
 - CSRF-skydd på POST (verktyget är enanvändar-lokalt idag).
 - Ev. duplicera en deklaration som utgångspunkt för nästa par.
-- Ev. flera formulärvarianter (SBF har olika blankettверсioner).
+- Ev. flera formulärvarianter. Research (TASK-274) visar att vårt skelett =
+  SBF:s "blå klubbdeklaration" (vanligast). Andra officiella varianter: WBF-
+  modell (elit, annan struktur - eget skelett krävs), Bridgekryss (kondenserad
+  en-sida med Pre-alert), samt "vit"/"orange" (ej verifierade). Bygg vid behov.
 - Deployment som Docker-container på TERVO2 om det ska bli permanent.
 
 ## Referens
