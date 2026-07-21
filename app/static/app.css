@@ -87,7 +87,7 @@ table.form-op textarea { margin: 0; min-height: 1.8rem; width: 100%; }
   width: 2rem; height: 2rem; margin: 0; padding: 0;
   font-size: 1.15rem; line-height: 1; border-radius: 6px;
 }
-.suitbtn.red { --pico-color: var(--svk-red); }
+.suitbtn.suit-d, .suitbtn.suit-h { --pico-color: var(--svk-red); }
 .suitbtn:hover { --pico-border-color: var(--svk-accent); }
 .fourcolor-toggle {
   display: inline-flex; align-items: center; gap: .35rem; margin: 0 0 0 auto;
@@ -121,6 +121,12 @@ body.fourcolor .suit-d { color: #d97706; }
 body.fourcolor .suit-h { color: #c23b30; }
 body.fourcolor .suit-s { color: #2059a8; }
 
+/* Palettknapparna (.suitbtn) styrs via --pico-color, annars vinner Pico. */
+body.fourcolor .suitbtn.suit-c { --pico-color: #1f7a44; }
+body.fourcolor .suitbtn.suit-d { --pico-color: #d97706; }
+body.fourcolor .suitbtn.suit-h { --pico-color: #c23b30; }
+body.fourcolor .suitbtn.suit-s { --pico-color: #2059a8; }
+
 /* Mörkt läge: mörkblå/mörkgrön ger för dålig kontrast mot editorns mörka
    bakgrund - ljusare SBF-tolkning i stället. Panel/PDF påverkas inte
    (papper är alltid vitt), bara editorns etiketter. */
@@ -129,11 +135,19 @@ body.fourcolor .suit-s { color: #2059a8; }
   :root:not([data-theme]) body.fourcolor .suit-d { color: #e8991f; }
   :root:not([data-theme]) body.fourcolor .suit-h { color: #e0655a; }
   :root:not([data-theme]) body.fourcolor .suit-s { color: #5b9bd5; }
+  :root:not([data-theme]) body.fourcolor .suitbtn.suit-c { --pico-color: #3fa06a; }
+  :root:not([data-theme]) body.fourcolor .suitbtn.suit-d { --pico-color: #e8991f; }
+  :root:not([data-theme]) body.fourcolor .suitbtn.suit-h { --pico-color: #e0655a; }
+  :root:not([data-theme]) body.fourcolor .suitbtn.suit-s { --pico-color: #5b9bd5; }
 }
 :root[data-theme="dark"] body.fourcolor .suit-c { color: #3fa06a; }
 :root[data-theme="dark"] body.fourcolor .suit-d { color: #e8991f; }
 :root[data-theme="dark"] body.fourcolor .suit-h { color: #e0655a; }
 :root[data-theme="dark"] body.fourcolor .suit-s { color: #5b9bd5; }
+:root[data-theme="dark"] body.fourcolor .suitbtn.suit-c { --pico-color: #3fa06a; }
+:root[data-theme="dark"] body.fourcolor .suitbtn.suit-d { --pico-color: #e8991f; }
+:root[data-theme="dark"] body.fourcolor .suitbtn.suit-h { --pico-color: #e0655a; }
+:root[data-theme="dark"] body.fourcolor .suitbtn.suit-s { --pico-color: #5b9bd5; }
 
 /* Spinner + toast */
 .spinner { display: inline-block; width: 1em; height: 1em; border: 2px solid currentColor;
