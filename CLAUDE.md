@@ -51,8 +51,10 @@ av A6-paneler = två exemplar per ark, skärs till A6-kort för laminering).
 - **Färgfärgning:** `config.render_suits()` wrappar varje färg i en per-färg-klass
   (`suit-c/d/h/s`). Filter `suits`/`bud`/`bud_suit` i `render.py` (och `bud` i
   `pages.py`). print.css ger tvåfärg som default; klassen `.fourcolor` på behållaren
-  (styrd av `payload.display.four_color`) slår om till fyrfärgslek (♣ grön, ♦ blå,
-  ♥ röd, ♠ svart). Sätts via kryssrutan i palettraden, sparas per deklaration.
+  (styrd av `payload.display.four_color`) slår om till fyrfärgslek (SBF-schema:
+  ♣ grön, ♦ orange, ♥ röd, ♠ blå). Sätts via kryssrutan i palettraden, sparas
+  per deklaration. Editorn (`app.js`/`app.css`) följer samma toggle via
+  `body.fourcolor`, med ljusare varianter i mörkt läge för kontrast.
 
 ## Pappas fyra fynd (från task-256, alla åtgärdade)
 

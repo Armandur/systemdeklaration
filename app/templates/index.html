@@ -86,7 +86,7 @@
         <label>Övriga konventioner<textarea rows="2" data-path="ovriga_konventioner"></textarea></label>
         <div class="fbgrid">
         {% for key, label in forsvarsbud_fields %}
-          <label class="fbrow"><span class="fblbl">{{ label }}</span>
+          <label class="fbrow"><span class="fblbl">{{ label | suits }}</span>
             <input type="text" data-path="forsvarsbud.{{ key }}"></label>
         {% endfor %}
         </div>

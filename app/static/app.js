@@ -16,6 +16,11 @@ function setPath(obj, path, val) {
   o[last] = val;
 }
 
+// ---- fyrfärgslek: låt editorn följa samma toggle som panel/PDF ----
+function applyFourColor() {
+  document.body.classList.toggle("fourcolor", !!getPath(state, "display.four_color"));
+}
+
 // ---- färg-kortkommandon: /c /d /h /s -> symbol ----
 const SUIT_MAP = { "/c": "♣", "/d": "♦", "/h": "♥", "/s": "♠" };
 function expandSuits(v) {
@@ -38,6 +43,7 @@ function stateToForm() {
   for (const el of fields) {
     if (el.tagName === "TEXTAREA") autosize(el);
   }
+  applyFourColor();
 }
 function formToStateField(el) {
   if (el.type === "checkbox") {
@@ -66,6 +72,7 @@ for (const el of fields) {
   el.addEventListener(evt, () => {
     formToStateField(el);
     if (el.tagName === "TEXTAREA") autosize(el);
+    if (el.dataset.path === "display.four_color") applyFourColor();
     if (exactMode) setLiveMode();
     schedulePreview();
     scheduleAutosave();

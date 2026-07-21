@@ -12,6 +12,7 @@ from .. import config
 router = APIRouter()
 templates = Jinja2Templates(directory=str(config.BASE_DIR / "templates"))
 templates.env.filters["bud"] = lambda t: Markup(config.render_bud(t))
+templates.env.filters["suits"] = lambda t: Markup(config.render_suits(t))
 
 
 @router.get("/", response_class=HTMLResponse)

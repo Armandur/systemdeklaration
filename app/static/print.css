@@ -16,12 +16,12 @@
 /* Tvåfärgslek (default): ruter/hjärter röda, klöver/spader svarta. */
 .suit-d, .suit-h { color: var(--red); }
 .suit-c, .suit-s { color: var(--ink); }
-/* Fyrfärgslek: klöver grön, ruter blå, hjärter röd, spader svart.
-   Färger från chicago/kortspelshornan. */
+/* Fyrfärgslek: klöver grön, ruter orange, hjärter röd, spader blå.
+   Svenska Bridgeförbundets officiella schema. */
 .fourcolor .suit-c { color: #1f7a44; }
-.fourcolor .suit-d { color: #2059a8; }
+.fourcolor .suit-d { color: #d97706; }
 .fourcolor .suit-h { color: #c23b30; }
-.fourcolor .suit-s { color: #1b1b1b; }
+.fourcolor .suit-s { color: #2059a8; }
 
 /* Nolla webbläsarens default-marginaler så arket inte spiller till ny sida. */
 html, body { margin: 0; padding: 0; }

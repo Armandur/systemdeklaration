@@ -110,9 +110,30 @@ table.form-op textarea { margin: 0; min-height: 1.8rem; width: 100%; }
   border-radius: 6px; background: #e9e9ef; }
 @media (max-width: 900px) { .previewpane { position: static; } #previewFrame { height: 60vh; } }
 
-/* Färgsymboler i formuläret (editorn hålls tvåfärgad för läsbarhet). */
+/* Färgsymboler i formuläret. Tvåfärg som default (läsbart mot Pico-färgen). */
 .suit-d, .suit-h { color: var(--svk-red); }
 .suit-c, .suit-s { color: var(--pico-color); }
+
+/* Fyrfärgslek i editorn: följer samma toggle och SBF-schema som panel/PDF
+   (klöver grön, ruter orange, hjärter röd, spader blå). */
+body.fourcolor .suit-c { color: #1f7a44; }
+body.fourcolor .suit-d { color: #d97706; }
+body.fourcolor .suit-h { color: #c23b30; }
+body.fourcolor .suit-s { color: #2059a8; }
+
+/* Mörkt läge: mörkblå/mörkgrön ger för dålig kontrast mot editorns mörka
+   bakgrund - ljusare SBF-tolkning i stället. Panel/PDF påverkas inte
+   (papper är alltid vitt), bara editorns etiketter. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) body.fourcolor .suit-c { color: #3fa06a; }
+  :root:not([data-theme]) body.fourcolor .suit-d { color: #e8991f; }
+  :root:not([data-theme]) body.fourcolor .suit-h { color: #e0655a; }
+  :root:not([data-theme]) body.fourcolor .suit-s { color: #5b9bd5; }
+}
+:root[data-theme="dark"] body.fourcolor .suit-c { color: #3fa06a; }
+:root[data-theme="dark"] body.fourcolor .suit-d { color: #e8991f; }
+:root[data-theme="dark"] body.fourcolor .suit-h { color: #e0655a; }
+:root[data-theme="dark"] body.fourcolor .suit-s { color: #5b9bd5; }
 
 /* Spinner + toast */
 .spinner { display: inline-block; width: 1em; height: 1em; border: 2px solid currentColor;
