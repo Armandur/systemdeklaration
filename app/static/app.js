@@ -119,10 +119,11 @@ function imposition() {
     binding_margin_mm: Number(document.getElementById("impBinding").value) || 0,
   };
 }
+const scheduleExact = debounce(() => { if (exactMode) refreshExact(); }, 400);
 for (const id of ["impSwap", "impRotate", "impTrim", "impCut", "impCenter", "impBinding"]) {
-  document.getElementById(id).addEventListener("change", () => {
-    if (exactMode) refreshExact();
-  });
+  const el = document.getElementById(id);
+  el.addEventListener("input", scheduleExact);
+  el.addEventListener("change", scheduleExact);
 }
 
 // ---- förhandsvisning ----
