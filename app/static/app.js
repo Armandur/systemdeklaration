@@ -267,12 +267,7 @@ document.getElementById("btnDelete").addEventListener("click", async () => {
   showToast("Borttagen");
 });
 
-// ---- tema ----
-document.getElementById("btnTheme").addEventListener("click", () => {
-  const html = document.documentElement;
-  const next = html.getAttribute("data-theme") === "dark" ? "light" : "dark";
-  html.setAttribute("data-theme", next);
-});
+// (temaväxlaren hanteras av theme.js)
 
 // ---- init ----
 const restored = restoreLocal();

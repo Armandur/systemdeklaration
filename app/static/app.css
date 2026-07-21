@@ -12,6 +12,8 @@
 .topactions input, .topactions select, .topactions button { margin: 0; width: auto; }
 .topactions input#decName { min-width: 12rem; }
 .topactions button { padding: .4rem .7rem; }
+.themebtn { display: inline-flex; align-items: center; justify-content: center; }
+.themebtn svg { display: block; }
 
 .layout { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 1rem; padding: 1rem; }
 @media (max-width: 900px) { .layout { grid-template-columns: 1fr; } }
