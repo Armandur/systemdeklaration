@@ -24,6 +24,12 @@
 .formpane label { font-size: .85rem; }
 .formpane input, .formpane textarea, .formpane select { margin-bottom: .5rem; font-size: .9rem; }
 .formpane textarea { min-height: 2.2rem; }
+
+/* 276: autosize via JS - dölj scroll, tillåt inte manuell resize (höjden styrs av innehållet) */
+.formpane textarea, table.form-op textarea {
+  overflow: hidden;
+  resize: none;
+}
 .hint { display: block; color: var(--pico-muted-color); margin-top: .3rem; }
 
 .tablewrap { overflow-x: auto; }

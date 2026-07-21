@@ -24,10 +24,19 @@ function expandSuits(v) {
 
 // ---- bind formulär <-> state ----
 const fields = [...document.querySelectorAll("[data-path]")];
+
+// ---- 276: textareas ska växa/krympa efter innehåll ----
+function autosize(el) {
+  el.style.height = "auto";
+  el.style.height = el.scrollHeight + "px";
+}
 function stateToForm() {
   for (const el of fields) {
     if (el.type === "checkbox") el.checked = !!getPath(state, el.dataset.path);
     else el.value = getPath(state, el.dataset.path) ?? "";
+  }
+  for (const el of fields) {
+    if (el.tagName === "TEXTAREA") autosize(el);
   }
 }
 function formToStateField(el) {
@@ -56,6 +65,7 @@ for (const el of fields) {
   const evt = el.type === "checkbox" ? "change" : "input";
   el.addEventListener(evt, () => {
     formToStateField(el);
+    if (el.tagName === "TEXTAREA") autosize(el);
     if (exactMode) setLiveMode();
     schedulePreview();
     scheduleAutosave();
@@ -70,6 +80,7 @@ function insertAtCursor(el, text) {
   const pos = start + text.length;
   el.setSelectionRange(pos, pos);
   formToStateField(el);
+  if (el.tagName === "TEXTAREA") autosize(el);
   schedulePreview();
   scheduleAutosave();
 }
