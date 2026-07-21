@@ -1,0 +1,55 @@
+{
+  "meta": {
+    "player1_name": "Elisabeth",
+    "player1_number": "57457",
+    "player2_name": "Johan",
+    "player2_number": "3411",
+    "grundsystem": "5533",
+    "antal_prickar": "2",
+    "special_forsvar": ""
+  },
+  "oppningsbud": [
+    { "bud": "1C", "prickar": "", "ant_kort": "3", "oppning": "(11)12-ca 19", "svar": "1Lå - 2Lå = 10+ Krav\n1Lå - 2NT = 7-9\n1Lå - 3Lå = 0-6" },
+    { "bud": "1D", "prickar": "", "ant_kort": "3", "oppning": "(11)12-ca 19", "svar": "" },
+    { "bud": "1H", "prickar": "", "ant_kort": "5", "oppning": "(11)12-ca 19", "svar": "Bergenhöjningar i HF i ostörd budgiv. + D\nStenbergs 2NT med Skrotsvar\nHopp i ny tvåläget svagt" },
+    { "bud": "1S", "prickar": "", "ant_kort": "5", "oppning": "(11)12-ca 19", "svar": "" },
+    { "bud": "1NT", "prickar": "", "ant_kort": "", "oppning": "15-17", "svar": "Stayman, Överföringar\nNågon gång 4441 eller Semi-balans" },
+    { "bud": "2C", "prickar": "", "ant_kort": "", "oppning": "Enda Krav, MP\nEv. 20-21 NT", "svar": "2♦ Relä, Övriga bud avslag mot 20-21 NT" },
+    { "bud": "2D", "prickar": "", "ant_kort": "6", "oppning": "6-10 (11)", "svar": "2NT Krav, Skrotsvar" },
+    { "bud": "2H", "prickar": "", "ant_kort": "6", "oppning": "6-10 (11)", "svar": "2NT Krav -¨-" },
+    { "bud": "2S", "prickar": "", "ant_kort": "6", "oppning": "6-10 (11)", "svar": "2NT Krav -¨-" },
+    { "bud": "2NT", "prickar": "", "ant_kort": "", "oppning": "22-24", "svar": "Stayman, Överföringar" },
+    { "bud": "3CDHS", "prickar": "", "ant_kort": "7", "oppning": "Spärr", "svar": "" },
+    { "bud": "3NT", "prickar": "", "ant_kort": "", "oppning": "Gambling", "svar": "4♣ Avslag\n4♦ Krav" },
+    { "bud": "4CDHS", "prickar": "", "ant_kort": "", "oppning": "Spärr", "svar": "" }
+  ],
+  "slamkonventioner": "Blackwood 0314 + trumfdam, Q-bid",
+  "ovriga_konventioner": "Positiva Inviter\nNegativa dubblingar, oftast 8+",
+  "forsvarsbud": {
+    "1NT": "15-18",
+    "2NT": "5-5 Lägsta, starkt eller svagt",
+    "enkelt_overbud": "Högsta + en till, 55, Öppning",
+    "dubbelt_overbud": "Hållfråga",
+    "hoppinkliv": "Spärr",
+    "mot_1nt": "Cappelletti i andra hand",
+    "mot_stark_1c": "Svaga inkliv ca 5Hp+ samt*",
+    "mot_multi_2d": "Direkt agerande 16+",
+    "mot_svaga_2": "D=UD NT=NT ca 14-18",
+    "mot_3cd": "",
+    "mot_3hs": "",
+    "ovriga": "*Mot stark Kl. 1NT 55 Lå    2♣ ngn 6:a\n2♦ 55(4) Hö   2♥ 5Hj 4Lå   2♠ 5Sp 4Lå"
+  },
+  "utspel": {
+    "mot_farg": "11-regeln      xxx     xx",
+    "mot_nt": "11-regeln      xxx     xx"
+  },
+  "vandor": {
+    "genom_spelforaren": "2:a – 4:e",
+    "i_partnerns_farg": "Attityd"
+  },
+  "markeringar": {
+    "styrka": "Schneider",
+    "langd": "Malmö",
+    "ovriga": "Lavinthal"
+  }
+}

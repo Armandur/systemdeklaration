@@ -1,0 +1,122 @@
+/* Print-/panel-stil. Delas av webbförhandsvisning och WeasyPrint.
+   En panel = ett A6-porträtt (105 x 148 mm). Fyra paneler = två dubbelsidiga
+   A6-kort. Tät layout enligt pappas fynd. */
+
+:root {
+  --panel-w: 105mm;
+  --panel-h: 148mm;
+  --pad: 4mm;
+  --ink: #000;
+  --line: #000;
+  --red: #d40000;
+}
+
+.suit-red { color: var(--red); }
+.suit-black { color: var(--ink); }
+
+/* ---- Panel-grund ---- */
+.panel {
+  box-sizing: border-box;
+  width: var(--panel-w);
+  height: var(--panel-h);
+  padding: var(--pad);
+  background: #fff;
+  color: var(--ink);
+  font-family: "DejaVu Sans", Arial, sans-serif;
+  font-size: 7pt;
+  line-height: 1.12;
+  overflow: hidden;
+  position: relative;
+}
+
+.panel table { border-collapse: collapse; width: 100%; }
+
+/* ---- Öppningsbud-tabell ---- */
+.op-table { height: 100%; table-layout: fixed; }
+.op-table th, .op-table td {
+  border: 0.4pt solid var(--line);
+  padding: 0.6mm 1mm;
+  vertical-align: middle;
+  text-align: left;
+}
+.op-table thead th { font-size: 6.5pt; font-weight: 700; vertical-align: bottom; }
+.op-table .rot {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  white-space: nowrap;
+  text-align: center;
+  font-weight: 400;
+  font-size: 5.5pt;
+}
+.op-table .c-prickar { width: 5mm; }
+.op-table .c-bud { width: 13mm; font-weight: 700; font-size: 8.5pt; text-align: center; }
+.op-table .c-kort { width: 6mm; text-align: center; font-size: 8pt; }
+.op-table .c-opp { width: 24mm; }
+.op-table .c-svar { font-size: 6.2pt; line-height: 1.05; }
+
+/* ---- Sektioner (försvar, utspel, markeringar) ---- */
+.sect { margin-bottom: 1.6mm; }
+.sect-h {
+  font-weight: 700; font-style: italic; font-size: 7.5pt;
+  margin: 0 0 0.6mm 0;
+}
+.sect-h.sub { margin-top: 1mm; font-size: 7pt; }
+.sect-box {
+  border: 0.5pt solid var(--line);
+  padding: 1mm 1.4mm;
+  min-height: 5mm;
+}
+.sect-box.tall { min-height: 16mm; }
+
+.kv-table td { border: 0.5pt solid var(--line); padding: 0.7mm 1.4mm; }
+.kv-table .k { font-weight: 700; width: 26mm; white-space: nowrap; }
+.kv-table .v { font-size: 6.6pt; }
+/* Sammanslagen rad: Mot 3klöver/ruter | Mot 3hjärter/spader */
+.kv-table tr.merged .k { width: 18mm; }
+.kv-table tr.merged .v { width: auto; }
+
+/* ---- Omslag/titel ---- */
+.panel-cover { display: flex; flex-direction: column; }
+.sbf-logo { position: absolute; top: 5mm; right: 5mm; width: 20mm; height: auto; }
+.cover-title {
+  font-size: 20pt; font-weight: 400; letter-spacing: 0.5pt;
+  margin-top: 26mm; line-height: 1.05;
+}
+.cover-for { font-weight: 700; font-size: 8pt; margin-top: 3mm; }
+.cover-players { margin-top: 2mm; border-bottom: 0.6pt solid var(--line); padding-bottom: 1.5mm; }
+.cover-players .pl-name { font-style: italic; color: var(--red); font-size: 15pt; }
+.cover-players .pl-num { font-weight: 700; font-size: 9pt; margin-right: 4mm; }
+.cover-row { display: flex; align-items: baseline; gap: 3mm; border-bottom: 0.6pt solid var(--line); padding: 1.5mm 0; }
+.cover-row .lbl { font-weight: 700; font-size: 8pt; }
+.cover-row .val { font-size: 10pt; }
+.cover-row .val.big { font-size: 15pt; font-weight: 700; }
+.cover-special { margin-top: 3mm; }
+.cover-special .lbl { font-weight: 700; font-size: 8pt; }
+.cover-special .special-val { border-bottom: 0.6pt solid var(--line); min-height: 8mm; margin-top: 1mm; }
+
+/* ---- Ark/imposition (endast för WeasyPrint) ---- */
+@page { size: A4 landscape; margin: 0; }
+.sheet {
+  width: 297mm; height: 210mm;
+  display: flex; justify-content: center; align-items: center;
+  gap: 0;
+  page-break-after: always;
+}
+.sheet:last-child { page-break-after: auto; }
+.slot { position: relative; }
+.slot .panel { border: 0.4pt solid #999; }   /* svag skärram */
+.slot.rot180 .panel { transform: rotate(180deg); }
+
+/* Skärmarkeringar i hörnen */
+.cmark { position: absolute; width: 4mm; height: 4mm; }
+.cmark::before, .cmark::after { content: ""; position: absolute; background: #000; }
+.cmark::before { width: 4mm; height: 0.2mm; top: 0; }
+.cmark::after { width: 0.2mm; height: 4mm; left: 0; }
+
+/* Pappas fynd 4: kortare förstakort. Streckad skärlinje nära nederkant. */
+.trim-guide {
+  position: absolute; left: 0; right: 0;
+  border-top: 0.4pt dashed #d40000;
+  z-index: 5;
+}
+.trim-guide .trim-lbl { position: absolute; right: 1mm; top: -2.6mm; font-size: 5pt; color: #d40000; }

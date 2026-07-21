@@ -1,0 +1,111 @@
+{# Jinja-makron som renderar de fyra A6-panelerna. Delas mellan
+   webbförhandsvisning och WeasyPrint-PDF så de aldrig divergerar. #}
+
+{% macro panel_cover(d, logo_src) %}
+<div class="panel panel-cover">
+  <img class="sbf-logo" src="{{ logo_src }}" alt="Sveriges Bridgeförbund">
+  <div class="cover-title">SYSTEM-<br>DEKLARATION</div>
+  <div class="cover-for">För</div>
+  <div class="cover-players">
+    <span class="pl-name">{{ d.meta.player1_name }}</span> <span class="pl-num">{{ d.meta.player1_number }}</span>
+    <span class="pl-name">{{ d.meta.player2_name }}</span> <span class="pl-num">{{ d.meta.player2_number }}</span>
+  </div>
+  <div class="cover-row"><span class="lbl">Grundsystem</span><span class="val big">{{ d.meta.grundsystem }}</span></div>
+  <div class="cover-row"><span class="lbl">Antal prickar:</span><span class="val">{{ d.meta.antal_prickar }}</span></div>
+  <div class="cover-special">
+    <div class="lbl">Öppningsbud som kan kräva speciella försvarsmetoder:</div>
+    <div class="special-val">{{ d.meta.special_forsvar | suits }}</div>
+  </div>
+</div>
+{% endmacro %}
+
+{% macro panel_opening(d) %}
+<div class="panel panel-opening">
+  <table class="op-table">
+    <thead>
+      <tr>
+        <th class="c-prickar rot">Prickar</th>
+        <th class="c-bud">Bud</th>
+        <th class="c-kort rot">Ant kort</th>
+        <th class="c-opp">Öppningsbud</th>
+        <th class="c-svar">Svar</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for r in d.oppningsbud %}
+      <tr>
+        <td class="c-prickar">{{ r.prickar }}</td>
+        <td class="c-bud">{{ r.bud | bud }}</td>
+        <td class="c-kort">{{ r.ant_kort }}</td>
+        <td class="c-opp">{{ r.oppning | suits }}</td>
+        <td class="c-svar">{{ r.svar | suits }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endmacro %}
+
+{% macro panel_defense(d) %}
+<div class="panel panel-defense">
+  <div class="sect">
+    <div class="sect-h">Slamkonventioner</div>
+    <div class="sect-box">{{ d.slamkonventioner | suits }}</div>
+  </div>
+  <div class="sect">
+    <div class="sect-h">Övriga konventioner</div>
+    <div class="sect-box">{{ d.ovriga_konventioner | suits }}</div>
+  </div>
+  <div class="sect">
+    <div class="sect-h">Försvarsbud</div>
+    <table class="kv-table">
+      <tr><td class="k">1NT</td><td class="v">{{ d.forsvarsbud['1NT'] | suits }}</td></tr>
+      <tr><td class="k">2NT</td><td class="v">{{ d.forsvarsbud['2NT'] | suits }}</td></tr>
+      <tr><td class="k">Enkelt överbud</td><td class="v">{{ d.forsvarsbud.enkelt_overbud | suits }}</td></tr>
+      <tr><td class="k">Dubbelt överbud</td><td class="v">{{ d.forsvarsbud.dubbelt_overbud | suits }}</td></tr>
+      <tr><td class="k">Hoppinkliv</td><td class="v">{{ d.forsvarsbud.hoppinkliv | suits }}</td></tr>
+      <tr><td class="k">Mot 1NT</td><td class="v">{{ d.forsvarsbud.mot_1nt | suits }}</td></tr>
+      <tr><td class="k">Mot stark 1{{ 'C' | bud_suit }}</td><td class="v">{{ d.forsvarsbud.mot_stark_1c | suits }}</td></tr>
+      <tr><td class="k">Mot multi 2{{ 'D' | bud_suit }}</td><td class="v">{{ d.forsvarsbud.mot_multi_2d | suits }}</td></tr>
+      <tr><td class="k">Mot svaga 2{{ 'D' | bud_suit }}{{ 'H' | bud_suit }}{{ 'S' | bud_suit }}</td><td class="v">{{ d.forsvarsbud.mot_svaga_2 | suits }}</td></tr>
+      {# Pappas fynd 2: Mot 3♣♦ och Mot 3♥♠ på samma rad #}
+      <tr class="merged">
+        <td class="k">Mot 3{{ 'C' | bud_suit }}{{ 'D' | bud_suit }}</td><td class="v">{{ d.forsvarsbud.mot_3cd | suits }}</td>
+        <td class="k">Mot 3{{ 'H' | bud_suit }}{{ 'S' | bud_suit }}</td><td class="v">{{ d.forsvarsbud.mot_3hs | suits }}</td>
+      </tr>
+    </table>
+    <div class="sect-h sub">Övriga försvarskonventioner</div>
+    <div class="sect-box">{{ d.forsvarsbud.ovriga | suits }}</div>
+  </div>
+</div>
+{% endmacro %}
+
+{% macro panel_leads(d) %}
+<div class="panel panel-leads">
+  <div class="sect">
+    <div class="sect-h">Utspel</div>
+    <table class="kv-table">
+      <tr><td class="k">Mot färg</td><td class="v">{{ d.utspel.mot_farg | suits }}</td></tr>
+      <tr><td class="k">Mot NT</td><td class="v">{{ d.utspel.mot_nt | suits }}</td></tr>
+    </table>
+  </div>
+  <div class="sect">
+    <div class="sect-h">Vändor</div>
+    <table class="kv-table">
+      <tr><td class="k">Genom spelföraren</td><td class="v">{{ d.vandor.genom_spelforaren | suits }}</td></tr>
+      <tr><td class="k">I partnerns färg</td><td class="v">{{ d.vandor.i_partnerns_farg | suits }}</td></tr>
+    </table>
+  </div>
+  <div class="sect">
+    <div class="sect-h">Markeringar</div>
+    <table class="kv-table">
+      <tr><td class="k">Styrka</td><td class="v">{{ d.markeringar.styrka | suits }}</td></tr>
+      <tr><td class="k">Längd</td><td class="v">{{ d.markeringar.langd | suits }}</td></tr>
+    </table>
+  </div>
+  <div class="sect">
+    <div class="sect-h">Övriga markeringar</div>
+    <div class="sect-box tall">{{ d.markeringar.ovriga | suits }}</div>
+  </div>
+</div>
+{% endmacro %}

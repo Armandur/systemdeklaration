@@ -1,0 +1,31 @@
+/* Projektidentitet ovanpå Pico. SBF-blå accent + statusfärger.
+   3-vägs tema: prefers-color-scheme + manuell data-theme-växel. */
+:root {
+  --svk-accent: #1a4f8b;
+  --svk-accent-hover: #143d6b;
+  --svk-ok: #1f8a4c;
+  --svk-warn: #b8860b;
+  --svk-err: #c0392b;
+  --svk-red: #d40000;
+
+  --pico-primary: var(--svk-accent);
+  --pico-primary-hover: var(--svk-accent-hover);
+  --pico-primary-focus: rgba(26, 79, 139, .3);
+  --pico-border-radius: 6px;
+  font-size: 100%;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    --svk-accent: #5b9bd5;
+    --svk-accent-hover: #7db0e0;
+  }
+}
+:root[data-theme="dark"] {
+  --svk-accent: #5b9bd5;
+  --svk-accent-hover: #7db0e0;
+}
+
+/* Kompakt admin-täthet */
+h1, h2, h3 { line-height: 1.15; }
+main.container { padding-top: 1rem; }

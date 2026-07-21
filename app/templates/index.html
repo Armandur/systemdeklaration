@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="sv" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Systemdeklaration - generator</title>
+<link rel="stylesheet" href="/static/pico.min.css">
+<link rel="stylesheet" href="/static/tokens.css">
+<link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand"><strong>Systemdeklaration</strong> <small>bridge</small></div>
+  <div class="topactions">
+    <input type="text" id="decName" placeholder="Namn på deklaration" aria-label="Namn">
+    <select id="decLoad" aria-label="Ladda sparad"><option value="">Sparade...</option></select>
+    <button id="btnNew" class="secondary outline">Ny</button>
+    <button id="btnSave">Spara</button>
+    <button id="btnDelete" class="secondary outline" title="Ta bort vald">Ta bort</button>
+    <button id="btnTheme" class="secondary outline" title="Byt tema">◐</button>
+  </div>
+</header>
+
+<main class="layout">
+  <section class="formpane">
+    <form id="decForm" autocomplete="off">
+
+      <article>
+        <header><strong>Omslag</strong></header>
+        <div class="grid">
+          <label>Spelare 1 - namn<input type="text" data-path="meta.player1_name"></label>
+          <label>Nummer<input type="text" data-path="meta.player1_number"></label>
+        </div>
+        <div class="grid">
+          <label>Spelare 2 - namn<input type="text" data-path="meta.player2_name"></label>
+          <label>Nummer<input type="text" data-path="meta.player2_number"></label>
+        </div>
+        <div class="grid">
+          <label>Grundsystem<input type="text" data-path="meta.grundsystem"></label>
+          <label>Antal prickar<input type="text" data-path="meta.antal_prickar"></label>
+        </div>
+        <label>Öppningsbud som kan kräva speciella försvarsmetoder
+          <input type="text" data-path="meta.special_forsvar"></label>
+      </article>
+
+      <article>
+        <header><strong>Öppningsbud</strong></header>
+        <div class="tablewrap">
+        <table class="form-op">
+          <thead><tr><th>Bud</th><th>Prickar</th><th>Ant kort</th><th>Öppningsbud</th><th>Svar</th></tr></thead>
+          <tbody>
+          {% for b in opening_rows %}
+            <tr>
+              <td class="budcell">{{ b | bud }}</td>
+              <td><input type="text" class="mini" data-path="oppningsbud.{{ loop.index0 }}.prickar"></td>
+              <td><input type="text" class="mini" data-path="oppningsbud.{{ loop.index0 }}.ant_kort"></td>
+              <td><textarea rows="1" data-path="oppningsbud.{{ loop.index0 }}.oppning"></textarea></td>
+              <td><textarea rows="1" data-path="oppningsbud.{{ loop.index0 }}.svar"></textarea></td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+        </div>
+        <small class="hint">Färger skrivs som symboler ♣ ♦ ♥ ♠ eller kortkommandon /c /d /h /s i textfält.</small>
+      </article>
+
+      <article>
+        <header><strong>Konventioner &amp; försvarsbud</strong></header>
+        <label>Slamkonventioner<textarea rows="2" data-path="slamkonventioner"></textarea></label>
+        <label>Övriga konventioner<textarea rows="2" data-path="ovriga_konventioner"></textarea></label>
+        <div class="fbgrid">
+        {% for key, label in forsvarsbud_fields %}
+          <label class="fbrow"><span class="fblbl">{{ label }}</span>
+            <input type="text" data-path="forsvarsbud.{{ key }}"></label>
+        {% endfor %}
+        </div>
+        <label>Övriga försvarskonventioner<textarea rows="3" data-path="forsvarsbud.ovriga"></textarea></label>
+      </article>
+
+      <article>
+        <header><strong>Utspel, vändor &amp; markeringar</strong></header>
+        <label>Utspel mot färg<input type="text" data-path="utspel.mot_farg"></label>
+        <label>Utspel mot NT<input type="text" data-path="utspel.mot_nt"></label>
+        <label>Vändor - genom spelföraren<input type="text" data-path="vandor.genom_spelforaren"></label>
+        <label>Vändor - i partnerns färg<input type="text" data-path="vandor.i_partnerns_farg"></label>
+        <label>Markeringar - styrka<input type="text" data-path="markeringar.styrka"></label>
+        <label>Markeringar - längd<input type="text" data-path="markeringar.langd"></label>
+        <label>Övriga markeringar<textarea rows="3" data-path="markeringar.ovriga"></textarea></label>
+      </article>
+
+      <article>
+        <header><strong>Utskrift / imposition</strong></header>
+        <div class="grid">
+          <label><input type="checkbox" id="impSwap" checked> Byt vänster/höger på baksidan (långsidesvändning)</label>
+          <label><input type="checkbox" id="impRotate"> Rotera baksidan 180°</label>
+        </div>
+        <div class="grid">
+          <label>Korta kort 1 (mm)<input type="number" id="impTrim" value="4" min="0" max="20" step="1"></label>
+          <label><input type="checkbox" id="impCut" checked> Skärmarkeringar</label>
+        </div>
+        <small class="hint">Testa vändningen fysiskt: skriv ut dubbelsidigt, håll mot ljus - baksidorna ska ligga rakt bakom framsidorna. Justera annars kryssrutorna ovan.</small>
+      </article>
+    </form>
+  </section>
+
+  <section class="previewpane">
+    <div class="previewbar">
+      <strong>Förhandsvisning</strong>
+      <span class="spinner" id="prevSpin" hidden></span>
+      <button id="btnPdf" class="pdfbtn">Generera PDF <span class="spinner" id="pdfSpin" hidden></span></button>
+    </div>
+    <iframe id="previewFrame" title="Förhandsvisning"></iframe>
+  </section>
+</main>
+
+<script id="emptyData" type="application/json">{{ empty | safe }}</script>
+<script type="module" src="/static/app.js"></script>
+</body>
+</html>

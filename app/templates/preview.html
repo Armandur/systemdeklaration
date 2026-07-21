@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<style>
+  {{ print_css }}
+  body { margin: 0; background: #e9e9ef; padding: 12px; }
+  .preview-grid {
+    display: flex; flex-wrap: wrap; gap: 12px; justify-content: center;
+    align-items: flex-start;
+  }
+  .pcard { background: #fff; box-shadow: 0 1px 6px rgba(0,0,0,.25); }
+  .pcap { font: 11px/1.4 system-ui, sans-serif; text-align: center; color: #555; margin: 2px 0 6px; }
+  figure { margin: 0; }
+</style>
+</head>
+<body>
+{% import "panels/_macros.html" as p %}
+<div class="preview-grid">
+  <figure><div class="pcard">{{ p.panel_cover(d, logo_src) }}</div><figcaption class="pcap">Kort 1 - fram (omslag)</figcaption></figure>
+  <figure><div class="pcard">{{ p.panel_opening(d) }}</div><figcaption class="pcap">Kort 1 - bak (öppningsbud)</figcaption></figure>
+  <figure><div class="pcard">{{ p.panel_defense(d) }}</div><figcaption class="pcap">Kort 2 - fram (försvar/konventioner)</figcaption></figure>
+  <figure><div class="pcard">{{ p.panel_leads(d) }}</div><figcaption class="pcap">Kort 2 - bak (utspel/markeringar)</figcaption></figure>
+</div>
+</body>
+</html>
