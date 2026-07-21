@@ -4,9 +4,11 @@ Webbverktyg som genererar utskriftsfärdiga systemdeklarationer för bridge
 enligt Sveriges Bridgeförbunds formulär. Man fyller i sina konventioner i ett
 webbformulär, ser en live-förhandsvisning och laddar ner en PDF.
 
-PDF:en är en **dubbelsidig, liggande A4** med fyra A6-paneler (två per sida).
-Efter utskrift skär man till fyra A6-blad, som blir **två dubbelsidiga A6-kort**
-att laminera och spiralbinda.
+PDF:en är en **dubbelsidig, stående A4** med ett 2x2-rutnät av A6-paneler.
+Arket innehåller **två identiska exemplar** av deklarationen (ett per rad) så
+att alla fyra A6-rutor nyttjas. Efter utskrift skär man ett vertikalt och ett
+horisontellt snitt = fyra A6-blad = **två kompletta deklarationer**, var och en
+ett dubbelsidigt A6-kort att laminera och spiralbinda.
 
 ## De fyra panelerna
 
@@ -31,7 +33,7 @@ libgdk-pixbuf-2.0-0`.
 
 ## Utskrift och imposition
 
-- Skriv ut **dubbelsidigt** i liggande A4.
+- Skriv ut **dubbelsidigt** i stående A4.
 - Panelernas placering på baksidan styrs av kryssrutorna under "Utskrift":
   - **Byt vänster/höger på baksidan** (default på) - för långsidesvändning,
     vanligast i kontorsskrivare.

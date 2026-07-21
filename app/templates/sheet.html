@@ -7,39 +7,39 @@
 <body>
 {% import "panels/_macros.html" as p %}
 
-{% macro slot(inner, rot=False, trim=0, cut=True) %}
-  <div class="slot {% if rot %}rot180{% endif %}">
-    {{ inner }}
+{% macro render_kind(kind) %}
+  {%- if kind == 'cover' -%}{{ p.panel_cover(d, logo_src) }}
+  {%- elif kind == 'opening' -%}{{ p.panel_opening(d) }}
+  {%- elif kind == 'defense' -%}{{ p.panel_defense(d) }}
+  {%- elif kind == 'leads' -%}{{ p.panel_leads(d) }}
+  {%- endif -%}
+{% endmacro %}
+
+{% macro slot(s, cut=True) %}
+  <div class="slot {% if s.rot %}rot180{% endif %}">
+    {{ render_kind(s.kind) }}
     {% if cut %}
       <span class="cmark" style="top:-2mm;left:-2mm"></span>
       <span class="cmark" style="top:-2mm;right:-2mm"></span>
       <span class="cmark" style="bottom:-2mm;left:-2mm"></span>
       <span class="cmark" style="bottom:-2mm;right:-2mm"></span>
     {% endif %}
-    {% if trim %}
-      <div class="trim-guide" style="bottom:{{ trim }}mm">
-        <span class="trim-lbl">skär kort 1 här ({{ trim }} mm kortare)</span>
+    {% if s.trim %}
+      <div class="trim-guide" style="bottom:{{ s.trim }}mm">
+        <span class="trim-lbl">skär kort 1 här ({{ s.trim }} mm kortare)</span>
       </div>
     {% endif %}
   </div>
 {% endmacro %}
 
-{# Framsida: [kort1 fram = omslag] [kort2 fram = försvar] #}
+{# Framsida: A4 stående, 2x2. Två exemplar (en rad var). #}
 <div class="sheet">
-  {{ slot(p.panel_cover(d, logo_src), trim=imp.trim_first_mm, cut=imp.cut_marks) }}
-  {{ slot(p.panel_defense(d), cut=imp.cut_marks) }}
+  {% for s in front_slots %}{{ slot(s, cut=imp.cut_marks) }}{% endfor %}
 </div>
 
-{# Baksida: bakom kort1 = öppningsbud, bakom kort2 = utspel.
-   back_swap byter vänster/höger för långsidesvändning. #}
+{# Baksida: speglad enligt duplex-läge så baksidorna hamnar rätt. #}
 <div class="sheet">
-  {% if imp.back_swap %}
-    {{ slot(p.panel_leads(d), rot=imp.back_rotate, cut=imp.cut_marks) }}
-    {{ slot(p.panel_opening(d), rot=imp.back_rotate, trim=imp.trim_first_mm, cut=imp.cut_marks) }}
-  {% else %}
-    {{ slot(p.panel_opening(d), rot=imp.back_rotate, trim=imp.trim_first_mm, cut=imp.cut_marks) }}
-    {{ slot(p.panel_leads(d), rot=imp.back_rotate, cut=imp.cut_marks) }}
-  {% endif %}
+  {% for s in back_slots %}{{ slot(s, cut=imp.cut_marks) }}{% endfor %}
 </div>
 </body>
 </html>

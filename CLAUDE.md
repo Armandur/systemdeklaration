@@ -1,8 +1,8 @@
 # CLAUDE.md - Systemdeklaration
 
 Generator för bridge-systemdeklarationer (SBF-formulär). Webbformulär ->
-live-förhandsvisning -> utskriftsfärdig PDF (dubbelsidig liggande A4 med fyra
-A6-paneler, skärs till två dubbelsidiga A6-kort för laminering/spiralbindning).
+live-förhandsvisning -> utskriftsfärdig PDF (dubbelsidig stående A4, 2x2-rutnät
+av A6-paneler = två exemplar per ark, skärs till A6-kort för laminering).
 
 ## Stack
 
@@ -39,10 +39,15 @@ A6-paneler, skärs till två dubbelsidiga A6-kort för laminering/spiralbindning
   cellvärdena varierar per par. Ingen generisk tabellbyggare.
 - **En källa för panel-HTML.** `panels/_macros.html` + `print.css` används av
   BÅDE webbförhandsvisningen och WeasyPrint-PDF:en, så de aldrig divergerar.
+- **A4 stående, 2x2, två exemplar.** Slutresultatet är A6, så arket är stående
+  A4 med fyra A6-paneler (`@page A4 portrait; margin 5.5mm 5mm` i print.css;
+  panel 100x143mm). En rad = ett exemplar (kort 1 vänster, kort 2 höger); båda
+  raderna är samma deklaration så alla fyra A6-rutor nyttjas. `render._build_slots()`
+  bygger fram-/bak-slotlistorna.
 - **Imposition parameteriseras, härleds inte.** Vilken baksidespanel som
-  hamnar bakom vilken framsida beror på skrivarens duplex-vändning. `sheet.html`
+  hamnar bakom vilken framsida beror på skrivarens duplex-vändning. `_build_slots`
   tar `back_swap`/`back_rotate`/`trim_first_mm`/`cut_marks`; default long-edge
-  (swap=on). Verifieras fysiskt av användaren, inte analytiskt.
+  (swap=on, byter kolumn inom raden). Verifieras fysiskt av användaren.
 - **Färgfärgning:** `config.render_suits()` wrappar ♣♠ svart, ♦♥ rött. Filter
   `suits`/`bud`/`bud_suit` i `render.py` (och `bud` i `pages.py`).
 
@@ -51,7 +56,8 @@ A6-paneler, skärs till två dubbelsidiga A6-kort för laminering/spiralbindning
 1. 4-nivå-Spärr renderas som 3-nivå-raden (enradig, `bud`-token `4CDHS`).
 2. "Mot 3♣♦" och "Mot 3♥♠" på samma rad (`tr.merged` i `_macros.html`).
 3. Borttaget vitt utrymme - budtabellen fyller panelhöjden (`height:100%`).
-4. Kort 1 några mm kortare - röd streckad `trim-guide` i `sheet.html`.
+4. Kort 1 några mm kortare - röd streckad `trim-guide` på kort 1:s båda faces
+   (omslag + öppningsbud) i `sheet.html`.
 
 ## Vanliga ändringar
 

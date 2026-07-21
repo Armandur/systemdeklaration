@@ -33,16 +33,43 @@ def _print_css() -> str:
     return (config.BASE_DIR / "static" / "print.css").read_text(encoding="utf-8")
 
 
-# Kortordning: kort 1 = omslag (fram) + öppningsbud (bak),
-# kort 2 = försvar (fram) + utspel/markeringar (bak).
+# Kort 1 = omslag (fram) + öppningsbud (bak). Kort 2 = försvar (fram) +
+# utspel/markeringar (bak). Trim gäller kort 1 (omslag + öppningsbud).
+# En A4 (stående, 2x2) rymmer TVÅ exemplar: en rad per exemplar, kort 1 i
+# vänsterkolumnen, kort 2 i högerkolumnen. Baksidan speglas efter duplex-läge.
+def _build_slots(imp: dict) -> tuple[list, list]:
+    trim = imp["trim_first_mm"] if imp.get("trim_first_mm") else 0
+    # Framsida, radvis: [kort1=omslag, kort2=försvar] x 2 exemplar.
+    front = [
+        {"kind": "cover", "trim": trim, "rot": False},
+        {"kind": "defense", "trim": 0, "rot": False},
+        {"kind": "cover", "trim": trim, "rot": False},
+        {"kind": "defense", "trim": 0, "rot": False},
+    ]
+    # Baksidorna som ska ligga bakom: kort1->öppningsbud, kort2->utspel.
+    if imp.get("back_swap", True):
+        # Långsidesvändning speglar vänster/höger: byt kolumn inom varje rad.
+        base = ["leads", "opening", "leads", "opening"]
+    else:
+        base = ["opening", "leads", "opening", "leads"]
+    rot = bool(imp.get("back_rotate", False))
+    back = [{"kind": k, "trim": trim if k == "opening" else 0, "rot": rot}
+            for k in base]
+    if rot:
+        # Kortsidesvändning: hela baksidan roteras, vänd ordningen.
+        back = list(reversed(back))
+    return front, back
+
+
 def render_sheet_html(d: dict, imposition: dict | None = None) -> str:
     imp = {"back_swap": True, "back_rotate": False, "trim_first_mm": 4,
            "cut_marks": True}
     if imposition:
         imp.update(imposition)
+    front, back = _build_slots(imp)
     tmpl = _env.get_template("sheet.html")
-    return tmpl.render(d=d, imp=imp, logo_src=_logo_data_uri(),
-                       print_css=_print_css())
+    return tmpl.render(d=d, imp=imp, front_slots=front, back_slots=back,
+                       logo_src=_logo_data_uri(), print_css=_print_css())
 
 
 def render_preview_html(d: dict) -> str:

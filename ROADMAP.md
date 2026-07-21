@@ -3,7 +3,8 @@
 ## Klart (MVP)
 
 - Webbformulär med hela SBF-skelettet, live-förhandsvisning.
-- WeasyPrint-PDF: dubbelsidig liggande A4, fyra A6-paneler, skärmarkeringar.
+- WeasyPrint-PDF: dubbelsidig stående A4, 2x2 A6-paneler = två exemplar per
+  ark, skärmarkeringar.
 - Spara/ladda/ta bort deklarationer (SQLite).
 - Pappas fyra fynd åtgärdade (se CLAUDE.md).
 - Färgsymboler med kortkommandon (/c /d /h /s) och röd/svart-färgning.

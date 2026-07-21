@@ -3,8 +3,10 @@
    A6-kort. Tät layout enligt pappas fynd. */
 
 :root {
-  --panel-w: 105mm;
-  --panel-h: 148mm;
+  /* Något under A6 så en skrivarmarginal ryms och inget klipps.
+     2x2 fyller A4-stående innanför sidmarginalen (200x286 mm). */
+  --panel-w: 100mm;
+  --panel-h: 143mm;
   --pad: 4mm;
   --ink: #000;
   --line: #000;
@@ -13,6 +15,9 @@
 
 .suit-red { color: var(--red); }
 .suit-black { color: var(--ink); }
+
+/* Nolla webbläsarens default-marginaler så arket inte spiller till ny sida. */
+html, body { margin: 0; padding: 0; }
 
 /* ---- Panel-grund ---- */
 .panel {
@@ -77,10 +82,11 @@
 
 /* ---- Omslag/titel ---- */
 .panel-cover { display: flex; flex-direction: column; }
-.sbf-logo { position: absolute; top: 5mm; right: 5mm; width: 20mm; height: auto; }
+/* Logon innanför panelens padding så den inte hamnar utanför marginalen. */
+.sbf-logo { position: absolute; top: var(--pad); right: var(--pad); width: 16mm; height: auto; }
 .cover-title {
-  font-size: 20pt; font-weight: 400; letter-spacing: 0.5pt;
-  margin-top: 26mm; line-height: 1.05;
+  font-size: 19pt; font-weight: 400; letter-spacing: 0.5pt;
+  margin-top: 22mm; line-height: 1.05;
 }
 .cover-for { font-weight: 700; font-size: 8pt; margin-top: 3mm; }
 .cover-players { margin-top: 2mm; border-bottom: 0.6pt solid var(--line); padding-bottom: 1.5mm; }
@@ -95,11 +101,14 @@
 .cover-special .special-val { border-bottom: 0.6pt solid var(--line); min-height: 8mm; margin-top: 1mm; }
 
 /* ---- Ark/imposition (endast för WeasyPrint) ---- */
-@page { size: A4 landscape; margin: 0; }
+/* A4 stående med 2x2 A6-paneler = två exemplar per ark. Sidmarginal ger
+   skrivarens icke-utskrivbara zon utrymme; panelerna fyller resten exakt. */
+@page { size: A4 portrait; margin: 5.5mm 5mm; }
 .sheet {
-  width: 297mm; height: 210mm;
-  display: flex; justify-content: center; align-items: center;
-  gap: 0;
+  width: 200mm; height: 286mm;
+  display: grid;
+  grid-template-columns: repeat(2, var(--panel-w));
+  grid-template-rows: repeat(2, var(--panel-h));
   page-break-after: always;
 }
 .sheet:last-child { page-break-after: auto; }
