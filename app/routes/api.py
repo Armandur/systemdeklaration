@@ -50,6 +50,30 @@ def preview(body: dict = Body(...)):
     return render.render_preview_html(payload)
 
 
+@router.post("/pdf-preview", response_class=HTMLResponse)
+def pdf_preview(body: dict = Body(...)):
+    """Rastrerad, exakt bild av de faktiska utskriftssidorna."""
+    import base64
+    payload = body.get("payload") or {}
+    imposition = body.get("imposition") or None
+    pages = render.render_pdf_page_pngs(payload, imposition)
+    labels = ["Framsida", "Baksida"]
+    imgs = "".join(
+        f'<figure><img src="data:image/png;base64,{base64.b64encode(p).decode()}">'
+        f'<figcaption>{labels[i] if i < len(labels) else "Sida %d" % (i+1)}</figcaption></figure>'
+        for i, p in enumerate(pages)
+    )
+    return (
+        "<!DOCTYPE html><html><head><meta charset='utf-8'><style>"
+        "body{margin:0;background:#e9e9ef;padding:12px;font:12px system-ui,sans-serif}"
+        ".g{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}"
+        "figure{margin:0;text-align:center}"
+        "img{max-width:100%;box-shadow:0 1px 6px rgba(0,0,0,.3);background:#fff}"
+        "figcaption{color:#555;margin-top:4px}"
+        "</style></head><body><div class='g'>" + imgs + "</div></body></html>"
+    )
+
+
 @router.post("/pdf")
 def pdf(body: dict = Body(...)):
     payload = body.get("payload") or {}

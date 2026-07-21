@@ -23,6 +23,14 @@
 
 <main class="layout">
   <section class="formpane">
+    <div class="suitpalette" role="toolbar" aria-label="Infoga färgsymbol">
+      <span class="sp-lbl">Infoga färg:</span>
+      <button type="button" class="suitbtn" data-suit="♣">♣</button>
+      <button type="button" class="suitbtn red" data-suit="♦">♦</button>
+      <button type="button" class="suitbtn red" data-suit="♥">♥</button>
+      <button type="button" class="suitbtn" data-suit="♠">♠</button>
+      <span class="sp-hint">klicka i ett fält först</span>
+    </div>
     <form id="decForm" autocomplete="off">
 
       <article>
@@ -96,7 +104,10 @@
         </div>
         <div class="grid">
           <label>Korta kort 1 (mm)<input type="number" id="impTrim" value="4" min="0" max="20" step="1"></label>
-          <label><input type="checkbox" id="impCut" checked> Skärmarkeringar</label>
+          <label><input type="checkbox" id="impCut" checked> Skärmarkeringar (hörn)</label>
+        </div>
+        <div class="grid">
+          <label><input type="checkbox" id="impCenter" checked> Mittlinjer för skärning (2x2)</label>
         </div>
         <small class="hint">Testa vändningen fysiskt: skriv ut dubbelsidigt, håll mot ljus - baksidorna ska ligga rakt bakom framsidorna. Justera annars kryssrutorna ovan.</small>
       </article>
@@ -107,8 +118,10 @@
     <div class="previewbar">
       <strong>Förhandsvisning</strong>
       <span class="spinner" id="prevSpin" hidden></span>
+      <button id="btnExact" class="secondary outline exactbtn">Visa exakt PDF <span class="spinner" id="exactSpin" hidden></span></button>
       <button id="btnPdf" class="pdfbtn">Generera PDF <span class="spinner" id="pdfSpin" hidden></span></button>
     </div>
+    <div id="overflowWarn" class="warnbox" hidden></div>
     <iframe id="previewFrame" title="Förhandsvisning"></iframe>
   </section>
 </main>

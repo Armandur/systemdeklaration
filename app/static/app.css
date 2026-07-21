@@ -37,9 +37,37 @@ table.form-op textarea { margin: 0; min-height: 1.8rem; width: 100%; }
 .fbrow input { margin-bottom: .35rem; }
 @media (max-width: 500px) { .fbrow { grid-template-columns: 1fr; } }
 
+/* Färgpalett */
+.suitpalette {
+  position: sticky; top: 3.6rem; z-index: 10;
+  display: flex; align-items: center; gap: .4rem; flex-wrap: wrap;
+  padding: .4rem .6rem; margin-bottom: .8rem;
+  background: var(--pico-card-background-color, var(--pico-background-color));
+  border: 1px solid var(--pico-muted-border-color); border-radius: 8px;
+}
+.suitpalette .sp-lbl { font-size: .85rem; font-weight: 600; }
+.suitpalette .sp-hint { font-size: .75rem; color: var(--pico-muted-color); }
+.suitbtn {
+  --pico-background-color: transparent;
+  --pico-border-color: var(--pico-muted-border-color);
+  --pico-color: var(--pico-color);
+  width: 2rem; height: 2rem; margin: 0; padding: 0;
+  font-size: 1.15rem; line-height: 1; border-radius: 6px;
+}
+.suitbtn.red { --pico-color: var(--svk-red); }
+.suitbtn:hover { --pico-border-color: var(--svk-accent); }
+
+/* Överflödesvarning */
+.warnbox {
+  padding: .5rem .8rem; margin-bottom: .5rem; border-radius: 6px;
+  background: color-mix(in srgb, var(--svk-warn) 18%, transparent);
+  border: 1px solid var(--svk-warn); font-size: .85rem;
+}
+
+.previewbar .exactbtn { margin: 0 0 0 auto; padding: .4rem .7rem; }
 .previewpane { position: sticky; top: 4rem; align-self: start; }
 .previewbar { display: flex; align-items: center; gap: .6rem; margin-bottom: .5rem; }
-.previewbar .pdfbtn { margin: 0 0 0 auto; width: auto; padding: .4rem .9rem; }
+.previewbar .pdfbtn { margin: 0; width: auto; padding: .4rem .9rem; }
 #previewFrame { width: 100%; height: 78vh; border: 1px solid var(--pico-muted-border-color);
   border-radius: 6px; background: #e9e9ef; }
 @media (max-width: 900px) { .previewpane { position: static; } #previewFrame { height: 60vh; } }

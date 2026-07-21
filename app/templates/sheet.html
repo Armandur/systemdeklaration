@@ -33,12 +33,12 @@
 {% endmacro %}
 
 {# Framsida: A4 stående, 2x2. Två exemplar (en rad var). #}
-<div class="sheet">
+<div class="sheet{% if imp.center_lines %} cl{% endif %}">
   {% for s in front_slots %}{{ slot(s, cut=imp.cut_marks) }}{% endfor %}
 </div>
 
 {# Baksida: speglad enligt duplex-läge så baksidorna hamnar rätt. #}
-<div class="sheet">
+<div class="sheet{% if imp.center_lines %} cl{% endif %}">
   {% for s in back_slots %}{{ slot(s, cut=imp.cut_marks) }}{% endfor %}
 </div>
 </body>

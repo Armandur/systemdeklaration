@@ -105,6 +105,7 @@ html, body { margin: 0; padding: 0; }
    skrivarens icke-utskrivbara zon utrymme; panelerna fyller resten exakt. */
 @page { size: A4 portrait; margin: 5.5mm 5mm; }
 .sheet {
+  position: relative;
   width: 200mm; height: 286mm;
   display: grid;
   grid-template-columns: repeat(2, var(--panel-w));
@@ -112,6 +113,14 @@ html, body { margin: 0; padding: 0; }
   page-break-after: always;
 }
 .sheet:last-child { page-break-after: auto; }
+
+/* Skärhjälp: mittlinjer där A4:n skärs till fyra A6. Ritas som streckade
+   inner-kanter på panelerna (border-box -> ingen overflow, ingen extrasida).
+   Slotordning i 2x2: 1=uppe vä, 2=uppe hö, 3=nere vä, 4=nere hö. */
+.sheet.cl .slot:nth-child(1) .panel { border-right: 0.3mm dashed #888; border-bottom: 0.3mm dashed #888; }
+.sheet.cl .slot:nth-child(2) .panel { border-left: 0.3mm dashed #888; border-bottom: 0.3mm dashed #888; }
+.sheet.cl .slot:nth-child(3) .panel { border-right: 0.3mm dashed #888; border-top: 0.3mm dashed #888; }
+.sheet.cl .slot:nth-child(4) .panel { border-left: 0.3mm dashed #888; border-top: 0.3mm dashed #888; }
 .slot { position: relative; }
 .slot .panel { border: 0.4pt solid #999; }   /* svag skärram */
 .slot.rot180 .panel { transform: rotate(180deg); }

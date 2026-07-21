@@ -63,7 +63,7 @@ def _build_slots(imp: dict) -> tuple[list, list]:
 
 def render_sheet_html(d: dict, imposition: dict | None = None) -> str:
     imp = {"back_swap": True, "back_rotate": False, "trim_first_mm": 4,
-           "cut_marks": True}
+           "cut_marks": True, "center_lines": True}
     if imposition:
         imp.update(imposition)
     front, back = _build_slots(imp)
@@ -82,3 +82,24 @@ def render_pdf(d: dict, imposition: dict | None = None) -> bytes:
     from weasyprint import HTML
     html = render_sheet_html(d, imposition)
     return HTML(string=html, base_url=str(config.BASE_DIR)).write_pdf()
+
+
+def render_pdf_page_pngs(d: dict, imposition: dict | None = None,
+                         dpi: int = 120) -> list[bytes]:
+    """Rendera PDF:en och rastrera varje sida till PNG (via pdftoppm) så UI:t
+    kan visa exakt vad som skrivs ut. WeasyPrint 69 saknar egen PNG-utmatning."""
+    import os
+    import subprocess
+    import tempfile
+    pdf = render_pdf(d, imposition)
+    with tempfile.TemporaryDirectory() as tmp:
+        pdf_path = os.path.join(tmp, "sheet.pdf")
+        with open(pdf_path, "wb") as f:
+            f.write(pdf)
+        subprocess.run(
+            ["pdftoppm", "-png", "-r", str(dpi), pdf_path, os.path.join(tmp, "page")],
+            check=True, capture_output=True,
+        )
+        pages = sorted(p for p in os.listdir(tmp)
+                       if p.startswith("page") and p.endswith(".png"))
+        return [open(os.path.join(tmp, p), "rb").read() for p in pages]
