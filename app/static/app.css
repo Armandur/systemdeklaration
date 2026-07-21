@@ -111,7 +111,10 @@ table.form-op textarea { margin: 0; min-height: 1.8rem; width: 100%; }
   border-radius: 6px; background: #e9e9ef; }
 @media (max-width: 900px) { .previewpane { position: static; } #previewFrame { height: 60vh; } }
 
-/* Färgsymboler i formuläret. Tvåfärg som default (läsbart mot Pico-färgen). */
+/* Färgsymboler i formuläret. Tvåfärg som default (läsbart mot Pico-färgen).
+   Tvinga textpresentation - annars kan mobila webbläsare rendera dessa som
+   färg-emoji med fast färg, och CSS color/fyrfärg biter inte. */
+.suit-c, .suit-d, .suit-h, .suit-s, .suitbtn { font-variant-emoji: text; }
 .suit-d, .suit-h { color: var(--svk-red); }
 .suit-c, .suit-s { color: var(--pico-color); }
 

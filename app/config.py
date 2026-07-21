@@ -64,7 +64,7 @@ def render_suits(text: str) -> str:
     for ch in text or "":
         cls = SUIT_CLASS.get(ch)
         if cls:
-            out.append(f'<span class="{cls}">{ch}</span>')
+            out.append(f'<span class="{cls}">{ch}︎</span>')
         else:
             out.append(str(escape(ch)))
     return "".join(out).replace("\n", "<br>")
@@ -82,5 +82,5 @@ def render_bud(token: str) -> str:
     for s in suits:
         glyph = SUIT_GLYPH.get(s, s)
         cls = SUIT_CLASS.get(glyph, "")
-        parts.append(f'<span class="{cls}">{glyph}</span>')
+        parts.append(f'<span class="{cls}">{glyph}︎</span>')
     return "".join(parts)

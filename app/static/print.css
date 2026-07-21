@@ -13,6 +13,10 @@
   --red: #d40000;
 }
 
+/* Tvinga textpresentation - annars kan mobila webbläsare rendera dessa som
+   färg-emoji med fast färg, och CSS color/fyrfärg biter inte. */
+.suit-c, .suit-d, .suit-h, .suit-s { font-variant-emoji: text; }
+
 /* Tvåfärgslek (default): ruter/hjärter röda, klöver/spader svarta. */
 .suit-d, .suit-h { color: var(--red); }
 .suit-c, .suit-s { color: var(--ink); }

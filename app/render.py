@@ -14,7 +14,7 @@ _env = Environment(
 def _suit_only(s: str) -> Markup:
     glyph = config.SUIT_GLYPH.get(s, s)
     cls = config.SUIT_CLASS.get(glyph, "")
-    return Markup(f'<span class="{cls}">{glyph}</span>')
+    return Markup(f'<span class="{cls}">{glyph}︎</span>')
 
 
 _env.filters["suits"] = lambda t: Markup(config.render_suits(t))
