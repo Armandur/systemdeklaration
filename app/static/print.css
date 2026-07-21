@@ -45,11 +45,14 @@ html, body { margin: 0; padding: 0; }
   text-align: left;
 }
 .op-table thead th { font-size: 6.5pt; font-weight: 700; vertical-align: bottom; }
-.op-table .rot {
-  writing-mode: vertical-rl;
-  transform: rotate(180deg);
+/* Vertikala kolumnrubriker: rotera en span 90 grader (läses nerifrån och upp),
+   fast radhöjd så texten får plats. Transform funkar lika i WeasyPrint och webb. */
+.op-table th.rot { height: 15mm; padding: 1mm 0; text-align: center; vertical-align: middle; }
+.op-table th.rot .vtext {
+  display: inline-block;
+  transform: rotate(-90deg);
+  transform-origin: center;
   white-space: nowrap;
-  text-align: center;
   font-weight: 400;
   font-size: 5.5pt;
 }
