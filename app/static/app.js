@@ -24,6 +24,7 @@ function applyFourColor() {
 // ---- färg-kortkommandon: /c /d /h /s -> symbol ----
 const SUIT_MAP = { "/c": "♣", "/d": "♦", "/h": "♥", "/s": "♠" };
 function expandSuits(v) {
+  v = v.replace(/\/nt/gi, "NT");
   return v.replace(/\/[cdhs]/gi, (m) => SUIT_MAP[m.toLowerCase()]);
 }
 
