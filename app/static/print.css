@@ -136,14 +136,16 @@ html, body { margin: 0; padding: 0; }
 .sheet.cl .slot:nth-child(3) .panel { border-right: 0.3mm dashed #888; border-top: 0.3mm dashed #888; }
 .sheet.cl .slot:nth-child(4) .panel { border-left: 0.3mm dashed #888; border-top: 0.3mm dashed #888; }
 .slot { position: relative; }
-.slot .panel { border: 0.4pt solid #999; }   /* svag skärram */
 .slot.rot180 .panel { transform: rotate(180deg); }
 
-/* Skärmarkeringar i hörnen */
-.cmark { position: absolute; width: 4mm; height: 4mm; }
-.cmark::before, .cmark::after { content: ""; position: absolute; background: #000; }
-.cmark::before { width: 4mm; height: 0.2mm; top: 0; }
-.cmark::after { width: 0.2mm; height: 4mm; left: 0; }
+/* Skärmarkeringar i hörnen. Ritas som ram (inte ::before/::after med
+   content:"") - Jinja escapar CSS:en när den injiceras i sheet.html, vilket
+   förvandlar content:"" till content:&#34;&#34; och gör pseudo-elementen
+   ogiltiga. Ramvarianten behöver inga citattecken och klarar escapingen. */
+.cmark {
+  position: absolute; width: 4mm; height: 4mm; box-sizing: border-box;
+  border-top: 0.3mm solid #000; border-left: 0.3mm solid #000;
+}
 
 /* Pappas fynd 4: kortare förstakort. Streckad skärlinje nära nederkant. */
 .trim-guide {
@@ -151,4 +153,4 @@ html, body { margin: 0; padding: 0; }
   border-top: 0.4pt dashed #d40000;
   z-index: 5;
 }
-.trim-guide .trim-lbl { position: absolute; right: 1mm; top: -2.6mm; font-size: 5pt; color: #d40000; }
+.trim-guide .trim-lbl { position: absolute; right: 1mm; top: 0.4mm; font-size: 5pt; color: #d40000; }
