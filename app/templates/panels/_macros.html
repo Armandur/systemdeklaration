@@ -68,11 +68,8 @@
       <tr><td class="k">Mot stark 1{{ 'C' | bud_suit }}</td><td class="v">{{ d.forsvarsbud.mot_stark_1c | suits }}</td></tr>
       <tr><td class="k">Mot multi 2{{ 'D' | bud_suit }}</td><td class="v">{{ d.forsvarsbud.mot_multi_2d | suits }}</td></tr>
       <tr><td class="k">Mot svaga 2{{ 'D' | bud_suit }}{{ 'H' | bud_suit }}{{ 'S' | bud_suit }}</td><td class="v">{{ d.forsvarsbud.mot_svaga_2 | suits }}</td></tr>
-      {# Pappas fynd 2: Mot 3♣♦ och Mot 3♥♠ på samma rad #}
-      <tr class="merged">
-        <td class="k">Mot 3{{ 'C' | bud_suit }}{{ 'D' | bud_suit }}</td><td class="v">{{ d.forsvarsbud.mot_3cd | suits }}</td>
-        <td class="k">Mot 3{{ 'H' | bud_suit }}{{ 'S' | bud_suit }}</td><td class="v">{{ d.forsvarsbud.mot_3hs | suits }}</td>
-      </tr>
+      <tr><td class="k">Mot 3{{ 'C' | bud_suit }}{{ 'D' | bud_suit }}</td><td class="v">{{ d.forsvarsbud.mot_3cd | suits }}</td></tr>
+      <tr><td class="k">Mot 3{{ 'H' | bud_suit }}{{ 'S' | bud_suit }}</td><td class="v">{{ d.forsvarsbud.mot_3hs | suits }}</td></tr>
     </table>
     <div class="sect-h sub">Övriga försvarskonventioner</div>
     <div class="sect-box">{{ d.forsvarsbud.ovriga | suits }}</div>

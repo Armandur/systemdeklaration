@@ -79,9 +79,6 @@ html, body { margin: 0; padding: 0; }
 .kv-table td { border: 0.5pt solid var(--line); padding: 0.7mm 1.4mm; }
 .kv-table .k { font-weight: 700; width: 26mm; white-space: nowrap; }
 .kv-table .v { font-size: 6.6pt; }
-/* Sammanslagen rad: Mot 3klöver/ruter | Mot 3hjärter/spader */
-.kv-table tr.merged .k { width: 18mm; }
-.kv-table tr.merged .v { width: auto; }
 
 /* ---- Omslag/titel ---- */
 .panel-cover { display: flex; flex-direction: column; }

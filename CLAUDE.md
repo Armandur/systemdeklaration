@@ -54,7 +54,8 @@ av A6-paneler = två exemplar per ark, skärs till A6-kort för laminering).
 ## Pappas fyra fynd (från task-256, alla åtgärdade)
 
 1. 4-nivå-Spärr renderas som 3-nivå-raden (enradig, `bud`-token `4CDHS`).
-2. "Mot 3♣♦" och "Mot 3♥♠" på samma rad (`tr.merged` i `_macros.html`).
+2. "Mot 3♣♦"/"Mot 3♥♠" - var på samma rad ett tag för att spara plats, men
+   ligger nu på var sin rad igen (platsen vanns via 2x2/A6-omläggningen).
 3. Borttaget vitt utrymme - budtabellen fyller panelhöjden (`height:100%`).
 4. Kort 1 några mm kortare - röd streckad `trim-guide` på kort 1:s båda faces
    (omslag + öppningsbud) i `sheet.html`.
