@@ -4,9 +4,12 @@
 <meta charset="utf-8">
 <style>
   {{ print_css }}
-  body { margin: 0; background: #e9e9ef; padding: 12px; }
+  body { margin: 0; background: #e9e9ef; padding: 12px; overflow-x: auto; }
   .preview-grid {
-    display: flex; flex-wrap: wrap; gap: 12px; justify-content: center;
+    display: flex; flex-wrap: wrap; gap: 12px;
+    /* Centrera när panelerna får plats, men vänsterjustera (safe) när de är
+       bredare än ytan så de inte klipps - då kan man skrolla i sidled i stället. */
+    justify-content: safe center;
     align-items: flex-start;
   }
   .pcard { background: #fff; box-shadow: 0 1px 6px rgba(0,0,0,.25); }
