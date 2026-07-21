@@ -31,6 +31,31 @@ table.form-op .budcell { font-weight: 700; white-space: nowrap; font-size: .95re
 table.form-op input.mini { width: 3.2rem; text-align: center; margin: 0; }
 table.form-op textarea { margin: 0; min-height: 1.8rem; width: 100%; }
 
+/* 269: mobil - staplade kort istället för bred tabell. Desktop oförändrad. */
+@media (max-width: 560px) {
+  table.form-op thead { display: none; }
+  table.form-op, table.form-op tbody { display: block; }
+  table.form-op tr {
+    display: flex; flex-wrap: wrap; align-items: center; gap: .3rem .6rem;
+    border: 1px solid var(--pico-muted-border-color); border-radius: 8px;
+    padding: .55rem .6rem; margin-bottom: .6rem;
+  }
+  table.form-op td { display: block; border: none; padding: 0; }
+  table.form-op td.budcell { font-size: 1.25rem; font-weight: 700; margin-right: auto; }
+  table.form-op td.mcell {
+    display: flex; align-items: center; gap: .3rem;
+    font-size: .72rem; color: var(--pico-muted-color);
+  }
+  table.form-op td.mcell::before { content: attr(data-label); }
+  table.form-op td.mcell input.mini { width: 2.8rem; }
+  table.form-op td.wide { flex: 0 0 100%; }
+  table.form-op td.wide::before {
+    content: attr(data-label); display: block;
+    font-size: .72rem; color: var(--pico-muted-color); margin-bottom: .1rem;
+  }
+  table.form-op td.wide textarea { width: 100%; }
+}
+
 .fbgrid { display: grid; grid-template-columns: 1fr; gap: 0; }
 .fbrow { display: grid; grid-template-columns: 10rem 1fr; align-items: center; gap: .5rem; }
 .fbrow .fblbl { font-weight: 600; }

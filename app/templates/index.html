@@ -60,10 +60,10 @@
           {% for b in opening_rows %}
             <tr>
               <td class="budcell">{{ b | bud }}</td>
-              <td><input type="text" class="mini" data-path="oppningsbud.{{ loop.index0 }}.prickar"></td>
-              <td><input type="text" class="mini" data-path="oppningsbud.{{ loop.index0 }}.ant_kort"></td>
-              <td><textarea rows="1" data-path="oppningsbud.{{ loop.index0 }}.oppning"></textarea></td>
-              <td><textarea rows="1" data-path="oppningsbud.{{ loop.index0 }}.svar"></textarea></td>
+              <td class="mcell" data-label="Prickar"><input type="text" class="mini" data-path="oppningsbud.{{ loop.index0 }}.prickar"></td>
+              <td class="mcell" data-label="Kort"><input type="text" class="mini" data-path="oppningsbud.{{ loop.index0 }}.ant_kort"></td>
+              <td class="wide" data-label="Öppningsbud"><textarea rows="1" data-path="oppningsbud.{{ loop.index0 }}.oppning"></textarea></td>
+              <td class="wide" data-label="Svar"><textarea rows="1" data-path="oppningsbud.{{ loop.index0 }}.svar"></textarea></td>
             </tr>
           {% endfor %}
           </tbody>
