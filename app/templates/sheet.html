@@ -20,14 +20,49 @@
   {%- endif -%}
 {% endmacro %}
 
-{% macro slot(s, cut=True) %}
+{#
+  Registreringsmärken vid cut_marks: varje slot i 2x2-rutnätet (1=uppe vä,
+  2=uppe hö, 3=nere vä, 4=nere hö) har fyra hörn, och varje hörn har en
+  fast roll oavsett innehåll:
+    slot1 TL / slot2 TR / slot3 BL / slot4 BR = papprets YTTRE hörn
+    slot1 TR = slot2 TL = topp-mitt   slot2 BR = slot4 TR = höger-mitt
+    slot3 BR = slot4 BL = botten-mitt slot1 BL = slot3 TL = vänster-mitt
+    slot1 BR = slot2 BL = slot3 TR = slot4 TL = centrum
+  Varje roll ritas EN gång (i den lägst numrerade slotten som har den) så
+  vi slipper dubbelritade/överlappande spann.
+#}
+{% macro slot(s, cut=True, idx=0) %}
   <div class="slot {% if s.rot %}rot180{% endif %}"{% if imp.binding_margin_mm %} style="--gutter-{{ s.gutter }}: {{ imp.binding_margin_mm }}mm"{% endif %}>
     {{ render_kind(s.kind) }}
     {% if cut %}
-      <span class="cmark" style="top:-2mm;left:-2mm"></span>
-      <span class="cmark" style="top:-2mm;right:-2mm"></span>
-      <span class="cmark" style="bottom:-2mm;left:-2mm"></span>
-      <span class="cmark" style="bottom:-2mm;right:-2mm"></span>
+      {% if idx == 1 %}
+        {# Yttre hörn uppe vänster #}
+        <span class="cmark ctl" style="top:-1.5mm;left:-1.5mm"></span>
+        {# Topp-mitt: tvärslå på överkanten + stam ner i arket #}
+        <span class="emark-h" style="top:0;right:-2.5mm;width:5mm"></span>
+        <span class="emark-v" style="top:0;right:0;height:2.5mm"></span>
+        {# Vänster-mitt: tvärslå på vänsterkanten + stam in i arket #}
+        <span class="emark-v" style="left:0;bottom:-2.5mm;height:5mm"></span>
+        <span class="emark-h" style="left:0;bottom:0;width:2.5mm"></span>
+        {# Centrum: litet '+' #}
+        <span class="emark-h" style="bottom:0;right:-1.5mm;width:3mm"></span>
+        <span class="emark-v" style="right:0;bottom:-1.5mm;height:3mm"></span>
+      {% elif idx == 2 %}
+        {# Yttre hörn uppe höger #}
+        <span class="cmark ctr" style="top:-1.5mm;right:-1.5mm"></span>
+        {# Höger-mitt: tvärslå på högerkanten + stam in i arket #}
+        <span class="emark-v" style="right:0;bottom:-2.5mm;height:5mm"></span>
+        <span class="emark-h" style="right:0;bottom:0;width:2.5mm"></span>
+      {% elif idx == 3 %}
+        {# Yttre hörn nere vänster #}
+        <span class="cmark cbl" style="bottom:-1.5mm;left:-1.5mm"></span>
+        {# Botten-mitt: tvärslå på underkanten + stam upp i arket #}
+        <span class="emark-h" style="bottom:0;right:-2.5mm;width:5mm"></span>
+        <span class="emark-v" style="bottom:0;right:0;height:2.5mm"></span>
+      {% elif idx == 4 %}
+        {# Yttre hörn nere höger #}
+        <span class="cmark cbr" style="bottom:-1.5mm;right:-1.5mm"></span>
+      {% endif %}
     {% endif %}
     {% if s.trim %}
       <div class="trim-guide" style="bottom:{{ s.trim }}mm">
@@ -39,12 +74,12 @@
 
 {# Framsida: A4 stående, 2x2. Två exemplar (en rad var). #}
 <div class="sheet{% if imp.center_lines %} cl{% endif %}">
-  {% for s in front_slots %}{{ slot(s, cut=imp.cut_marks) }}{% endfor %}
+  {% for s in front_slots %}{{ slot(s, cut=imp.cut_marks, idx=loop.index) }}{% endfor %}
 </div>
 
 {# Baksida: speglad enligt duplex-läge så baksidorna hamnar rätt. #}
 <div class="sheet{% if imp.center_lines %} cl{% endif %}">
-  {% for s in back_slots %}{{ slot(s, cut=imp.cut_marks) }}{% endfor %}
+  {% for s in back_slots %}{{ slot(s, cut=imp.cut_marks, idx=loop.index) }}{% endfor %}
 </div>
 </body>
 </html>

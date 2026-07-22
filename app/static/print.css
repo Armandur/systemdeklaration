@@ -11,6 +11,9 @@
   --ink: #000;
   --line: #000;
   --red: #d40000;
+  /* Skärmarkeringar: tunna registreringsmärken (0.1-0.15mm), mörkgrå/svart. */
+  --cut-w: 0.12mm;
+  --cut-c: #333;
 }
 
 /* Tvinga textpresentation - annars kan mobila webbläsare rendera dessa som
@@ -128,24 +131,53 @@ html, body { margin: 0; padding: 0; }
 }
 .sheet:last-child { page-break-after: auto; }
 
-/* Skärhjälp: mittlinjer där A4:n skärs till fyra A6. Ritas som streckade
-   inner-kanter på panelerna (border-box -> ingen overflow, ingen extrasida).
-   Slotordning i 2x2: 1=uppe vä, 2=uppe hö, 3=nere vä, 4=nere hö. */
-.sheet.cl .slot:nth-child(1) .panel { border-right: 0.3mm dashed #888; border-bottom: 0.3mm dashed #888; }
-.sheet.cl .slot:nth-child(2) .panel { border-left: 0.3mm dashed #888; border-bottom: 0.3mm dashed #888; }
-.sheet.cl .slot:nth-child(3) .panel { border-right: 0.3mm dashed #888; border-top: 0.3mm dashed #888; }
-.sheet.cl .slot:nth-child(4) .panel { border-left: 0.3mm dashed #888; border-top: 0.3mm dashed #888; }
+/* Skärhjälp: tunna centrumsnittslinjer där A4:n skärs till fyra A6. Ritas
+   som solida inner-kanter på panelerna (border-box -> ingen overflow, ingen
+   extrasida) - varje panels inner-kant spänner hela panelens höjd/bredd, så
+   de fyra panelernas kanter tillsammans bildar EN sammanhängande linje
+   kant-till-kant i båda riktningarna: ett '+' där de möts i mitten, och
+   raka '|'/'—'-segment ut till papperskanten. Slotordning i 2x2: 1=uppe vä,
+   2=uppe hö, 3=nere vä, 4=nere hö. */
+.sheet.cl .slot:nth-child(1) .panel { border-right: var(--cut-w) solid var(--cut-c); border-bottom: var(--cut-w) solid var(--cut-c); }
+.sheet.cl .slot:nth-child(2) .panel { border-left: var(--cut-w) solid var(--cut-c); border-bottom: var(--cut-w) solid var(--cut-c); }
+.sheet.cl .slot:nth-child(3) .panel { border-right: var(--cut-w) solid var(--cut-c); border-top: var(--cut-w) solid var(--cut-c); }
+.sheet.cl .slot:nth-child(4) .panel { border-left: var(--cut-w) solid var(--cut-c); border-top: var(--cut-w) solid var(--cut-c); }
 .slot { position: relative; }
 .slot.rot180 .panel { transform: rotate(180deg); }
 
-/* Skärmarkeringar i hörnen. Ritas som ram (inte ::before/::after med
-   content:"") - Jinja escapar CSS:en när den injiceras i sheet.html, vilket
-   förvandlar content:"" till content:&#34;&#34; och gör pseudo-elementen
-   ogiltiga. Ramvarianten behöver inga citattecken och klarar escapingen. */
+/* Registreringsmärken (cut_marks): tunna hörnvinklar i papprets FYRA YTTRE
+   hörn (.cmark), ett kort '⊤/⊥/⊢/⊣'-tick vid var och en av de fyra
+   kantmitterna där ett centrumsnitt möter ytterkanten (.emark-h/.emark-v,
+   en tvärslå längs kanten + en kort stam in i arket), samt ett litet '+' i
+   mitten. Allt ritas som ram/border på små, lokalt absolut-positionerade
+   spann (INTE full-bleed - se filkommentaren ovan om varför inte
+   ::before/::after med content:"": Jinja escapar CSS:en som injiceras i
+   sheet.html, vilket förvandlar content:"" till content:&#34;&#34; och gör
+   pseudo-elementen ogiltiga). Placeringen (vilket hörn som är en yttre
+   hörn-, kantmitt- respektive centrumpunkt) styrs i sheet.html via
+   slot-index, inte här.
+
+   z-index krävs: kant-mitt- och centrummärkena sträcker sig medvetet in i
+   GRANNPANELENS yta (för att hamna mitt på gränspunkten). .panel har
+   position:relative, så utan z-index målas grannpanelens vita bakgrund
+   (senare i DOM-ordning) ovanpå den delen av märket - ett '+' blir en halv
+   '+' (en 'L'). z-index lyfter alla märken till ett eget stapel-lager som
+   alltid målas sist, oavsett DOM-ordning. */
 .cmark {
-  position: absolute; width: 4mm; height: 4mm; box-sizing: border-box;
-  border-top: 0.3mm solid #000; border-left: 0.3mm solid #000;
+  position: absolute; width: 3mm; height: 3mm; box-sizing: border-box;
+  border: 0 solid var(--cut-c);
+  z-index: 5;
 }
+.cmark.ctl { border-top-width: var(--cut-w); border-left-width: var(--cut-w); }
+.cmark.ctr { border-top-width: var(--cut-w); border-right-width: var(--cut-w); }
+.cmark.cbl { border-bottom-width: var(--cut-w); border-left-width: var(--cut-w); }
+.cmark.cbr { border-bottom-width: var(--cut-w); border-right-width: var(--cut-w); }
+
+/* Byggstenar för kant-T och centrum-'+': .emark-h är ett vågrätt streck
+   (bredd sätts inline per instans), .emark-v ett lodrätt (höjd sätts
+   inline). Kombineras två och två i sheet.html till en tvärslå + stam. */
+.emark-h { position: absolute; height: 0; width: 0; border-top: var(--cut-w) solid var(--cut-c); z-index: 5; }
+.emark-v { position: absolute; width: 0; height: 0; border-left: var(--cut-w) solid var(--cut-c); z-index: 5; }
 
 /* Pappas fynd 4: kortare förstakort. Streckad skärlinje nära nederkant. */
 .trim-guide {
