@@ -61,19 +61,53 @@ def empty_declaration() -> dict:
 def render_suits(text: str) -> str:
     """Wrappa färgsymboler i span med per-färg-klass. Escapar övrig text.
 
-    Stödjer en fejk-markdown för understrykning: `_text_` -> `<u>text</u>`.
-    Ett `_` växlar understrykningsläge; `_`-tecknen konsumeras och syns inte.
-    Oavslutat `_` vid strängslut stängs automatiskt."""
+    Stödjer en fejk-markdown för enkel formatering:
+    - `**text**` -> `<b>text</b>` (fet, dubbel-asterisk växlar läge)
+    - `*text*` -> `<i>text</i>` (kursiv, enkel asterisk växlar läge)
+    - `_text_` -> `<u>text</u>` (understruken, `_` växlar läge)
+
+    En ensam `*` utan matchande partner längre fram i strängen (t.ex.
+    fotnotsmarkören i "... samt*") tolkas INTE som kursiv-start utan skrivs
+    ut literalt - annars skulle resten av texten bli oavsiktligt kursiv.
+    Oavslutade taggar vid strängslut stängs automatiskt.
+
+    Backslash escapar nästa tecken: `\\*` -> literal `*`, `\\_` -> literal `_`,
+    `\\\\` -> literal `\\` (och `\\` följt av en färgsymbol ger en ofärgad literal
+    glyf). Så man kan skriva bokstavliga markup-tecken."""
     from markupsafe import escape
     out = []
     underline = False
-    for ch in text or "":
-        if ch == "_":
-            if underline:
-                out.append("</u>")
+    italic = False
+    bold = False
+    s = text or ""
+    n = len(s)
+    i = 0
+    while i < n:
+        ch = s[i]
+        if ch == "\\" and i + 1 < n:
+            out.append(str(escape(s[i + 1])))
+            i += 2
+            continue
+        if ch == "*" and i + 1 < n and s[i + 1] == "*":
+            out.append("</b>" if bold else "<b>")
+            bold = not bold
+            i += 2
+            continue
+        if ch == "*":
+            if italic:
+                out.append("</i>")
+                italic = False
+            elif "*" in s[i + 1:]:
+                out.append("<i>")
+                italic = True
             else:
-                out.append("<u>")
+                out.append(str(escape(ch)))
+            i += 1
+            continue
+        if ch == "_":
+            out.append("</u>" if underline else "<u>")
             underline = not underline
+            i += 1
             continue
         cls = SUIT_CLASS.get(ch)
         if cls:
@@ -82,8 +116,13 @@ def render_suits(text: str) -> str:
             out.append("<br>")
         else:
             out.append(str(escape(ch)))
+        i += 1
     if underline:
         out.append("</u>")
+    if italic:
+        out.append("</i>")
+    if bold:
+        out.append("</b>")
     return "".join(out)
 
 

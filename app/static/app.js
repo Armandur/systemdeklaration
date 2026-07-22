@@ -148,6 +148,24 @@ for (const btn of document.querySelectorAll(".suitbtn")) {
   });
 }
 
+// ---- formatknappar (B/I/U): omslut markerad text med markörpar ----
+function wrapSelection(el, mark) {
+  const s = el.selectionStart ?? el.value.length, e = el.selectionEnd ?? el.value.length;
+  const sel = el.value.slice(s, e);
+  el.value = el.value.slice(0, s) + mark + sel + mark + el.value.slice(e);
+  el.setSelectionRange(s + mark.length, e + mark.length); // markera inre texten
+  formToStateField(el); if (el.tagName === "TEXTAREA") autosize(el);
+  schedulePreview(); scheduleAutosave();
+}
+for (const btn of document.querySelectorAll(".fmtbtn")) {
+  btn.addEventListener("mousedown", (e) => e.preventDefault()); // behåll fokus/markör
+  btn.addEventListener("click", () => {
+    if (!lastField) { showToast("Klicka i ett fält först", "err"); return; }
+    lastField.focus();
+    wrapSelection(lastField, btn.dataset.wrap);
+  });
+}
+
 // ---- imposition ----
 function imposition() {
   const pageMargin = Number(document.getElementById("impPageMargin").value);
