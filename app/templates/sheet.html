@@ -65,7 +65,7 @@
       {% endif %}
     {% endif %}
     {% if s.trim %}
-      <div class="trim-guide" style="bottom:{{ s.trim }}mm">
+      <div class="trim-guide {{ s.trim_side }}" style="{{ s.trim_side }}:{{ s.trim }}mm">
         <span class="trim-lbl">skär kort 1 här ({{ s.trim }} mm kortare)</span>
       </div>
     {% endif %}

@@ -38,7 +38,7 @@ html, body { margin: 0; padding: 0; }
   box-sizing: border-box;
   width: var(--panel-w);
   height: var(--panel-h);
-  padding: var(--pad) calc(var(--pad) + var(--gutter-right, 0mm)) var(--pad) calc(var(--pad) + var(--gutter-left, 0mm));
+  padding: calc(var(--pad) + var(--gutter-top, 0mm)) calc(var(--pad) + var(--gutter-right, 0mm)) calc(var(--pad) + var(--gutter-bottom, 0mm)) calc(var(--pad) + var(--gutter-left, 0mm));
   background: #fff;
   color: var(--ink);
   font-family: "DejaVu Sans", Arial, sans-serif;
@@ -179,10 +179,35 @@ html, body { margin: 0; padding: 0; }
 .emark-h { position: absolute; height: 0; width: 0; border-top: var(--cut-w) solid var(--cut-c); z-index: 5; }
 .emark-v { position: absolute; width: 0; height: 0; border-left: var(--cut-w) solid var(--cut-c); z-index: 5; }
 
-/* Pappas fynd 4: kortare förstakort. Streckad skärlinje nära nederkant. */
-.trim-guide {
-  position: absolute; left: 0; right: 0;
-  border-top: 0.4pt dashed #d40000;
-  z-index: 5;
+/* Pappas fynd 4: kortare förstakort. Streckad skärlinje nära den kant kortet
+   ska kortas från (öppningskanten, motsatt bindningskanten) - horisontell
+   (bottom/top) eller vertikal (left/right) beroende på bindningsval. */
+.trim-guide { position: absolute; z-index: 5; }
+.trim-guide.bottom, .trim-guide.top { left: 0; right: 0; }
+.trim-guide.left, .trim-guide.right { top: 0; bottom: 0; }
+
+.trim-guide.bottom { border-top: 0.4pt dashed var(--red); }
+.trim-guide.top { border-bottom: 0.4pt dashed var(--red); }
+.trim-guide.right { border-left: 0.4pt dashed var(--red); }
+.trim-guide.left { border-right: 0.4pt dashed var(--red); }
+
+.trim-guide .trim-lbl {
+  position: absolute; font-size: 5pt; color: var(--red); white-space: nowrap;
 }
-.trim-guide .trim-lbl { position: absolute; right: 1mm; top: 0.4mm; font-size: 5pt; color: #d40000; }
+/* Horisontella varianter: label i den bortskurna remsan mellan linjen och
+   respektive kant (bottom -> under linjen mot nederkant, top -> ovanför
+   linjen mot överkant). */
+.trim-guide.bottom .trim-lbl { right: 1mm; top: 0.4mm; }
+.trim-guide.top .trim-lbl { right: 1mm; bottom: 0.4mm; }
+/* Vertikala varianter: texten roterad 90° för att få plats i den smala
+   remsan (right -> remsan ligger till höger om linjen, left -> till vänster). */
+.trim-guide.right .trim-lbl {
+  left: 0.6mm; top: 40%;
+  transform: rotate(90deg);
+  transform-origin: left top;
+}
+.trim-guide.left .trim-lbl {
+  right: 0.6mm; top: 40%;
+  transform: rotate(-90deg);
+  transform-origin: right top;
+}

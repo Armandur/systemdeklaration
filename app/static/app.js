@@ -146,6 +146,7 @@ function imposition() {
     cut_marks: document.getElementById("impCut").checked,
     center_lines: document.getElementById("impCenter").checked,
     binding_margin_mm: Number(document.getElementById("impBinding").value) || 0,
+    binding_edge: document.getElementById("impBindEdge").value,
     page_margin_mm: Number.isNaN(pageMargin) ? 5 : pageMargin,
   };
 }
@@ -153,7 +154,7 @@ function imposition() {
 const sig = () => JSON.stringify({ p: state, i: imposition() });
 
 const scheduleExact = debounce(() => { if (exactMode) refreshExact(); }, 400);
-for (const id of ["impSwap", "impRotate", "impTrim", "impCut", "impCenter", "impBinding", "impPageMargin"]) {
+for (const id of ["impSwap", "impRotate", "impTrim", "impCut", "impCenter", "impBinding", "impBindEdge", "impPageMargin"]) {
   const el = document.getElementById(id);
   el.addEventListener("input", scheduleExact);
   el.addEventListener("change", scheduleExact);

@@ -49,18 +49,42 @@ def _print_css() -> Markup:
     return Markup(css)
 
 
+_OPPOSITE = {"left": "right", "right": "left", "top": "bottom", "bottom": "top"}
+_MIRROR_LR = {"left": "right", "right": "left", "top": "top", "bottom": "bottom"}
+
+
+def _opposite(edge: str) -> str:
+    """Motsatt kant: left<->right, top<->bottom."""
+    return _OPPOSITE[edge]
+
+
+def _mirror_lr(edge: str) -> str:
+    """Spegling vid duplex-vändning på långsidan: left<->right byts,
+    top/bottom lämnas orört."""
+    return _MIRROR_LR[edge]
+
+
 # Kort 1 = omslag (fram) + öppningsbud (bak). Kort 2 = försvar (fram) +
 # utspel/markeringar (bak). Trim gäller kort 1 (omslag + öppningsbud).
 # En A4 (stående, 2x2) rymmer TVÅ exemplar: en rad per exemplar, kort 1 i
 # vänsterkolumnen, kort 2 i högerkolumnen. Baksidan speglas efter duplex-läge.
 def _build_slots(imp: dict) -> tuple[list, list]:
     trim = imp["trim_first_mm"] if imp.get("trim_first_mm") else 0
+    edge = imp.get("binding_edge", "left")
+    # Gutter (bindningsmarginal) ligger på bindningskanten, trim på den
+    # motsatta (öppnings-)kanten - på FRAMSIDAN direkt enligt valet.
+    front_gutter = edge
+    front_trim_side = _opposite(edge)
     # Framsida, radvis: [kort1=omslag, kort2=försvar] x 2 exemplar.
     front = [
-        {"kind": "cover", "trim": trim, "rot": False, "gutter": "left"},
-        {"kind": "defense", "trim": 0, "rot": False, "gutter": "left"},
-        {"kind": "cover", "trim": trim, "rot": False, "gutter": "left"},
-        {"kind": "defense", "trim": 0, "rot": False, "gutter": "left"},
+        {"kind": "cover", "trim": trim, "rot": False,
+         "gutter": front_gutter, "trim_side": front_trim_side},
+        {"kind": "defense", "trim": 0, "rot": False,
+         "gutter": front_gutter, "trim_side": front_trim_side},
+        {"kind": "cover", "trim": trim, "rot": False,
+         "gutter": front_gutter, "trim_side": front_trim_side},
+        {"kind": "defense", "trim": 0, "rot": False,
+         "gutter": front_gutter, "trim_side": front_trim_side},
     ]
     # Baksidorna som ska ligga bakom: kort1->öppningsbud, kort2->utspel.
     if imp.get("back_swap", True):
@@ -69,16 +93,18 @@ def _build_slots(imp: dict) -> tuple[list, list]:
     else:
         base = ["opening", "leads", "opening", "leads"]
     rot = bool(imp.get("back_rotate", False))
-    # Bindningen sitter fysiskt vänster på framsidan. Vid default duplex
-    # (long-edge, back_rotate=False) speglas baksidan i höger/vänster, så
-    # samma fysiska kant motsvaras av HÖGER i back-slotens koordinatsystem.
+    # Vid default duplex (long-edge, back_rotate=False) speglas baksidan i
+    # vänster/höger (topp/botten bevaras), så samma fysiska kant motsvaras av
+    # mirror_lr(edge) i back-slotens koordinatsystem.
     # Känd begränsning: om back_rotate (kortsidesvändning) används roteras
     # panelen 180° via CSS (.slot.rot180 .panel), vilket speglar layouten
-    # ytterligare ett steg - gutter-sidan nedan ("right") stämmer då
-    # eventuellt inte längre mot den fysiska bindningskanten och kan behöva
-    # justeras separat. Utanför denna task.
+    # ytterligare ett steg - gutter-/trim-sidan nedan stämmer då eventuellt
+    # inte längre mot den fysiska bindningskanten och kan behöva justeras
+    # separat. Utanför denna task.
+    back_gutter = _mirror_lr(edge)
+    back_trim_side = _mirror_lr(_opposite(edge))
     back = [{"kind": k, "trim": trim if k == "opening" else 0, "rot": rot,
-             "gutter": "right"} for k in base]
+             "gutter": back_gutter, "trim_side": back_trim_side} for k in base]
     if rot:
         # Kortsidesvändning: hela baksidan roteras, vänd ordningen.
         back = list(reversed(back))
@@ -88,7 +114,7 @@ def _build_slots(imp: dict) -> tuple[list, list]:
 def render_sheet_html(d: dict, imposition: dict | None = None) -> str:
     imp = {"back_swap": True, "back_rotate": False, "trim_first_mm": 4,
            "cut_marks": True, "center_lines": True, "binding_margin_mm": 0,
-           "page_margin_mm": 5}
+           "binding_edge": "left", "page_margin_mm": 5}
     if imposition:
         imp.update(imposition)
     front, back = _build_slots(imp)
