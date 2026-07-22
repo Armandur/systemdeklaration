@@ -70,7 +70,7 @@ html, body { margin: 0; padding: 0; }
 .op-table th.rot { text-align: center; vertical-align: middle; padding: 0.5mm 0; }
 .op-table th.rot .vtext {
   display: inline-block;
-  line-height: 1.0;
+  line-height: 0.78;   /* tätt radavstånd mellan de staplade bokstäverna */
   font-weight: 400;
   font-size: calc(5.5pt * var(--font-scale, 1));
 }
