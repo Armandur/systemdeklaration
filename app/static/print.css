@@ -51,7 +51,10 @@ html, body { margin: 0; padding: 0; }
 .panel table { border-collapse: collapse; width: 100%; }
 
 /* ---- Öppningsbud-tabell ---- */
-.op-table { height: 100%; table-layout: fixed; }
+/* Ingen height:100% - webbläsaren sträcker då raderna (previewen fylls) men
+   WeasyPrint gör det inte (PDF:en får tomrum). Innehållshöjd i båda så preview
+   matchar PDF. */
+.op-table { table-layout: fixed; }
 .op-table th, .op-table td {
   border: 0.4pt solid var(--line);
   padding: 0.6mm 1mm;
@@ -61,11 +64,12 @@ html, body { margin: 0; padding: 0; }
 .op-table thead th { font-size: calc(6.5pt * var(--font-scale, 1)); font-weight: 700; vertical-align: bottom; }
 /* Vertikala kolumnrubriker: rotera en span 90 grader (läses nerifrån och upp),
    fast radhöjd så texten får plats. Transform funkar lika i WeasyPrint och webb. */
-.op-table th.rot { text-align: center; vertical-align: middle; padding: 1mm 0; }
+/* Roterade rubriker: absolut-centrerade i en cell med garanterad höjd (auto-
+   höjd för transform-element är opålitlig i WeasyPrint -> texten klipptes upptill). */
+.op-table th.rot { position: relative; height: 13mm; padding: 0; }
 .op-table th.rot .vtext {
-  display: inline-block;
-  transform: rotate(-90deg);
-  transform-origin: center;
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%, -50%) rotate(-90deg);
   white-space: nowrap;
   font-weight: 400;
   font-size: calc(5pt * var(--font-scale, 1));
