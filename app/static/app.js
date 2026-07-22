@@ -121,6 +121,9 @@ function imposition() {
     page_margin_mm: Number.isNaN(pageMargin) ? 5 : pageMargin,
   };
 }
+// ---- 304: signatur av state+imposition för att undvika onödig PDF-generering ----
+const sig = () => JSON.stringify({ p: state, i: imposition() });
+
 const scheduleExact = debounce(() => { if (exactMode) refreshExact(); }, 400);
 for (const id of ["impSwap", "impRotate", "impTrim", "impCut", "impCenter", "impBinding", "impPageMargin"]) {
   const el = document.getElementById(id);
@@ -172,11 +175,23 @@ function checkOverflow() {
 
 // ---- 268: exakt PDF-förhandsvisning (rastrerad) ----
 let exactMode = false;
+let exactCache = { sig: null, html: null };
 function setLiveMode() {
   exactMode = false;
   document.getElementById("btnExact").firstChild.textContent = "Visa exakt PDF ";
 }
+function enterExactMode() {
+  exactMode = true;
+  document.getElementById("btnExact").firstChild.textContent = "Live-förhandsvisning ";
+  document.getElementById("overflowWarn").hidden = true;
+}
 async function refreshExact() {
+  const s = sig();
+  if (s === exactCache.sig && exactCache.html != null) {
+    previewFrame.srcdoc = exactCache.html;
+    enterExactMode();
+    return;
+  }
   const spin = document.getElementById("exactSpin");
   spin.hidden = false;
   try {
@@ -184,10 +199,10 @@ async function refreshExact() {
       method: "POST",
       body: JSON.stringify({ payload: state, imposition: imposition() }),
     });
-    previewFrame.srcdoc = await res.text();
-    exactMode = true;
-    document.getElementById("btnExact").firstChild.textContent = "Live-förhandsvisning ";
-    document.getElementById("overflowWarn").hidden = true;
+    const html = await res.text();
+    previewFrame.srcdoc = html;
+    exactCache = { sig: s, html };
+    enterExactMode();
   } catch (e) {
     showToast("Kunde inte rendera PDF: " + e.message, "err");
   } finally {
@@ -223,7 +238,22 @@ function restoreLocal() {
 }
 
 // ---- PDF ----
+let pdfCache = { sig: null, blob: null };
 document.getElementById("btnPdf").addEventListener("click", async () => {
+  const s = sig();
+  const downloadBlob = (blob) => {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = (document.getElementById("decName").value || "systemdeklaration") + ".pdf";
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+  if (s === pdfCache.sig && pdfCache.blob) {
+    downloadBlob(pdfCache.blob);
+    showToast("PDF genererad");
+    return;
+  }
   const spin = document.getElementById("pdfSpin");
   spin.hidden = false;
   try {
@@ -234,12 +264,8 @@ document.getElementById("btnPdf").addEventListener("click", async () => {
     });
     if (!res.ok) throw new Error(await res.text());
     const blob = await res.blob();
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = (document.getElementById("decName").value || "systemdeklaration") + ".pdf";
-    a.click();
-    URL.revokeObjectURL(url);
+    pdfCache = { sig: s, blob };
+    downloadBlob(blob);
     showToast("PDF genererad");
   } catch (e) {
     showToast("PDF misslyckades: " + e.message, "err");
