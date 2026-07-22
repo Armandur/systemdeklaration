@@ -49,6 +49,32 @@ def _print_css() -> Markup:
     return Markup(css)
 
 
+_PANEL_NAMES = ("cover", "opening", "defense", "leads")
+
+
+def _panel_scale(d: dict, name: str) -> float:
+    """--font-scale för en given panel (cover/opening/defense/leads).
+    Manuellt läge (display.font_mode == 'manual'): samma globala skala
+    (display.font_scale) för alla paneler. Annars (auto): per-panel-skala
+    ur display.font_scales - en dict som klientens autofit i
+    förhandsvisnings-iframen fyller (se app.js). Saknas värde -> 1
+    (ingen skalning), så tomma/äldre deklarationer beter sig som förut."""
+    disp = d.get("display", {}) or {}
+    mode = disp.get("font_mode", "auto")
+    if mode == "manual":
+        val = disp.get("font_scale", 1.0)
+    else:
+        val = (disp.get("font_scales") or {}).get(name, 1.0)
+    try:
+        return float(val) if val not in (None, "") else 1.0
+    except (TypeError, ValueError):
+        return 1.0
+
+
+def _panel_scales(d: dict) -> dict:
+    return {name: _panel_scale(d, name) for name in _PANEL_NAMES}
+
+
 _OPPOSITE = {"left": "right", "right": "left", "top": "bottom", "bottom": "top"}
 _MIRROR_LR = {"left": "right", "right": "left", "top": "top", "bottom": "bottom"}
 
@@ -137,13 +163,14 @@ def render_sheet_html(d: dict, imposition: dict | None = None) -> str:
     return tmpl.render(d=d, imp=imp, front_slots=front, back_slots=back,
                        logo_src=_resolve_logo(d), print_css=_print_css(),
                        page_margin_mm=margin, content_w=content_w, content_h=content_h,
-                       panel_w=panel_w, panel_h=panel_h)
+                       panel_w=panel_w, panel_h=panel_h, panel_scales=_panel_scales(d))
 
 
 def render_preview_html(d: dict) -> str:
     """Fristående HTML som visar alla fyra paneler (för webb-iframe)."""
     tmpl = _env.get_template("preview.html")
-    return tmpl.render(d=d, logo_src=_resolve_logo(d), print_css=_print_css())
+    return tmpl.render(d=d, logo_src=_resolve_logo(d), print_css=_print_css(),
+                       panel_scales=_panel_scales(d))
 
 
 def render_pdf(d: dict, imposition: dict | None = None) -> bytes:

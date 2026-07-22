@@ -13,10 +13,10 @@
 {% import "panels/_macros.html" as p %}
 
 {% macro render_kind(kind) %}
-  {%- if kind == 'cover' -%}{{ p.panel_cover(d, logo_src) }}
-  {%- elif kind == 'opening' -%}{{ p.panel_opening(d) }}
-  {%- elif kind == 'defense' -%}{{ p.panel_defense(d) }}
-  {%- elif kind == 'leads' -%}{{ p.panel_leads(d) }}
+  {%- if kind == 'cover' -%}{{ p.panel_cover(d, logo_src, panel_scales.cover) }}
+  {%- elif kind == 'opening' -%}{{ p.panel_opening(d, panel_scales.opening) }}
+  {%- elif kind == 'defense' -%}{{ p.panel_defense(d, panel_scales.defense) }}
+  {%- elif kind == 'leads' -%}{{ p.panel_leads(d, panel_scales.leads) }}
   {%- endif -%}
 {% endmacro %}
 

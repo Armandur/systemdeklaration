@@ -20,10 +20,10 @@
 <body class="{% if d.display and d.display.four_color %}fourcolor{% endif %}">
 {% import "panels/_macros.html" as p %}
 <div class="preview-grid">
-  <figure><div class="pcard">{{ p.panel_cover(d, logo_src) }}</div><figcaption class="pcap">Kort 1 - fram (omslag)</figcaption></figure>
-  <figure><div class="pcard">{{ p.panel_opening(d) }}</div><figcaption class="pcap">Kort 1 - bak (öppningsbud)</figcaption></figure>
-  <figure><div class="pcard">{{ p.panel_defense(d) }}</div><figcaption class="pcap">Kort 2 - fram (försvar/konventioner)</figcaption></figure>
-  <figure><div class="pcard">{{ p.panel_leads(d) }}</div><figcaption class="pcap">Kort 2 - bak (utspel/markeringar)</figcaption></figure>
+  <figure><div class="pcard">{{ p.panel_cover(d, logo_src, panel_scales.cover) }}</div><figcaption class="pcap">Kort 1 - fram (omslag)</figcaption></figure>
+  <figure><div class="pcard">{{ p.panel_opening(d, panel_scales.opening) }}</div><figcaption class="pcap">Kort 1 - bak (öppningsbud)</figcaption></figure>
+  <figure><div class="pcard">{{ p.panel_defense(d, panel_scales.defense) }}</div><figcaption class="pcap">Kort 2 - fram (försvar/konventioner)</figcaption></figure>
+  <figure><div class="pcard">{{ p.panel_leads(d, panel_scales.leads) }}</div><figcaption class="pcap">Kort 2 - bak (utspel/markeringar)</figcaption></figure>
 </div>
 </body>
 </html>

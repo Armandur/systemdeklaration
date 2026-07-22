@@ -51,10 +51,21 @@ function stateToForm() {
     if (el.tagName === "TEXTAREA") autosize(el);
   }
   applyFourColor();
+  updateFontScaleUI();
+}
+// ---- 317: manuell textskala bara aktiv/meningsfull i manuellt läge ----
+function updateFontScaleUI() {
+  const el = document.getElementById("fontScale");
+  if (el) el.disabled = getPath(state, "display.font_mode") !== "manual";
 }
 function formToStateField(el) {
   if (el.type === "checkbox") {
     setPath(state, el.dataset.path, el.checked);
+    return;
+  }
+  if (el.type === "number" || el.type === "range") {
+    const n = Number(el.value);
+    setPath(state, el.dataset.path, Number.isNaN(n) ? 1 : n);
     return;
   }
   let v = el.value;
@@ -85,6 +96,7 @@ for (const el of fields) {
     formToStateField(el);
     if (el.tagName === "TEXTAREA") autosize(el);
     if (el.dataset.path === "display.four_color") applyFourColor();
+    if (el.dataset.path === "display.font_mode") updateFontScaleUI();
     if (exactMode) setLiveMode();
     schedulePreview();
     scheduleAutosave();
@@ -164,7 +176,59 @@ for (const id of ["impSwap", "impRotate", "impTrim", "impTrimCard", "impCut", "i
 // ---- förhandsvisning ----
 const prevSpin = document.getElementById("prevSpin");
 const previewFrame = document.getElementById("previewFrame");
-previewFrame.addEventListener("load", () => { if (!exactMode) checkOverflow(); });
+previewFrame.addEventListener("load", () => {
+  if (exactMode) return;
+  if (getPath(state, "display.font_mode") !== "manual") autofitAll();
+  checkOverflow();
+});
+
+// ---- 317: klientsidig autofit per A6-panel (auto-läge) ----
+// Krymper --font-scale (golv 0.6) tills panelens innehåll får plats
+// (scrollHeight <= clientHeight), samma mått som checkOverflow. Körs alltid
+// om från scale=1.0 (stateless per render) så det inte "driver" över tid.
+// Panelordningen i preview.html är cover, opening, defense, leads.
+const AUTOFIT_ORDER = ["cover", "opening", "defense", "leads"];
+const AUTOFIT_MIN = 0.6;
+const AUTOFIT_TOL = 2; // samma tolerans som checkOverflow (rad 193)
+
+function _fits(panel) {
+  return panel.scrollHeight <= panel.clientHeight + AUTOFIT_TOL;
+}
+
+function autofitPanel(panel) {
+  panel.style.setProperty("--font-scale", "1");
+  if (_fits(panel)) return 1;
+  panel.style.setProperty("--font-scale", String(AUTOFIT_MIN));
+  if (!_fits(panel)) return AUTOFIT_MIN; // får inte plats ens vid golvet
+  // Binärsök mellan AUTOFIT_MIN (passar) och 1 (passar inte) efter största
+  // skala som fortfarande passar.
+  let lo = AUTOFIT_MIN, hi = 1;
+  for (let i = 0; i < 14; i++) {
+    const mid = (lo + hi) / 2;
+    panel.style.setProperty("--font-scale", String(mid));
+    if (_fits(panel)) lo = mid; else hi = mid;
+  }
+  // Golva (inte runda) så den applicerade skalan garanterat fortsatt passar.
+  const result = Math.floor(lo * 1000) / 1000;
+  panel.style.setProperty("--font-scale", String(result));
+  return result;
+}
+
+function autofitAll() {
+  const doc = previewFrame.contentDocument;
+  if (!doc) return;
+  const figs = [...doc.querySelectorAll("figure")];
+  const scales = {};
+  figs.forEach((fig, i) => {
+    const key = AUTOFIT_ORDER[i];
+    const panel = fig.querySelector(".panel");
+    if (!panel || !key) return;
+    scales[key] = autofitPanel(panel);
+  });
+  // Lagras bara för PDF-bruk (server-render läser display.font_scales i
+  // auto-läge) - triggar INTE en ny preview-render.
+  setPath(state, "display.font_scales", scales);
+}
 
 async function renderPreview() {
   prevSpin.hidden = false;

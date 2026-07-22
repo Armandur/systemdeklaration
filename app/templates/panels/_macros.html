@@ -1,8 +1,8 @@
 {# Jinja-makron som renderar de fyra A6-panelerna. Delas mellan
    webbförhandsvisning och WeasyPrint-PDF så de aldrig divergerar. #}
 
-{% macro panel_cover(d, logo_src) %}
-<div class="panel panel-cover">
+{% macro panel_cover(d, logo_src, scale=1) %}
+<div class="panel panel-cover" style="--font-scale: {{ scale }}">
   {% if logo_src %}<img class="sbf-logo" src="{{ logo_src }}" alt="Sveriges Bridgeförbund">{% endif %}
   <div class="cover-title">SYSTEM-<br>DEKLARATION</div>
   <div class="cover-for">För</div>
@@ -19,8 +19,8 @@
 </div>
 {% endmacro %}
 
-{% macro panel_opening(d) %}
-<div class="panel panel-opening">
+{% macro panel_opening(d, scale=1) %}
+<div class="panel panel-opening" style="--font-scale: {{ scale }}">
   <table class="op-table">
     <thead>
       <tr>
@@ -46,8 +46,8 @@
 </div>
 {% endmacro %}
 
-{% macro panel_defense(d) %}
-<div class="panel panel-defense">
+{% macro panel_defense(d, scale=1) %}
+<div class="panel panel-defense" style="--font-scale: {{ scale }}">
   <div class="sect">
     <div class="sect-h">Slamkonventioner</div>
     <div class="sect-box">{{ d.slamkonventioner | suits }}</div>
@@ -77,8 +77,8 @@
 </div>
 {% endmacro %}
 
-{% macro panel_leads(d) %}
-<div class="panel panel-leads">
+{% macro panel_leads(d, scale=1) %}
+<div class="panel panel-leads" style="--font-scale: {{ scale }}">
   <div class="sect">
     <div class="sect-h">Utspel</div>
     <table class="kv-table">

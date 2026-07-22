@@ -42,7 +42,7 @@ html, body { margin: 0; padding: 0; }
   background: #fff;
   color: var(--ink);
   font-family: "DejaVu Sans", Arial, sans-serif;
-  font-size: 7pt;
+  font-size: calc(7pt * var(--font-scale, 1));
   line-height: 1.12;
   overflow: hidden;
   position: relative;
@@ -58,7 +58,7 @@ html, body { margin: 0; padding: 0; }
   vertical-align: middle;
   text-align: left;
 }
-.op-table thead th { font-size: 6.5pt; font-weight: 700; vertical-align: bottom; }
+.op-table thead th { font-size: calc(6.5pt * var(--font-scale, 1)); font-weight: 700; vertical-align: bottom; }
 /* Vertikala kolumnrubriker: rotera en span 90 grader (läses nerifrån och upp),
    fast radhöjd så texten får plats. Transform funkar lika i WeasyPrint och webb. */
 .op-table th.rot { height: 7mm; padding: 1mm 0; text-align: center; vertical-align: middle; }
@@ -68,13 +68,13 @@ html, body { margin: 0; padding: 0; }
   transform-origin: center;
   white-space: nowrap;
   font-weight: 400;
-  font-size: 5.5pt;
+  font-size: calc(5.5pt * var(--font-scale, 1));
 }
 .op-table .c-prickar { width: 5mm; }
-.op-table .c-bud { width: 13mm; font-weight: 700; font-size: 8.5pt; text-align: center; }
-.op-table .c-kort { width: 6mm; text-align: center; font-size: 8pt; }
+.op-table .c-bud { width: 13mm; font-weight: 700; font-size: calc(8.5pt * var(--font-scale, 1)); text-align: center; }
+.op-table .c-kort { width: 6mm; text-align: center; font-size: calc(8pt * var(--font-scale, 1)); }
 .op-table .c-opp { width: 24mm; }
-.op-table .c-svar { font-size: 6.2pt; line-height: 1.05; }
+.op-table .c-svar { font-size: calc(6.2pt * var(--font-scale, 1)); line-height: 1.05; }
 /* Fördela panelhöjden på dataraderna (height:100% sträcker inte raderna i
    WeasyPrint) så tabellen fyller A6-panelen istället för tomrum under. */
 .op-table tbody td { padding-top: 2mm; padding-bottom: 2mm; }
@@ -82,10 +82,10 @@ html, body { margin: 0; padding: 0; }
 /* ---- Sektioner (försvar, utspel, markeringar) ---- */
 .sect { margin-bottom: 1.6mm; }
 .sect-h {
-  font-weight: 700; font-style: italic; font-size: 7.5pt;
+  font-weight: 700; font-style: italic; font-size: calc(7.5pt * var(--font-scale, 1));
   margin: 0 0 0.6mm 0;
 }
-.sect-h.sub { margin-top: 1mm; font-size: 7pt; }
+.sect-h.sub { margin-top: 1mm; font-size: calc(7pt * var(--font-scale, 1)); }
 .sect-box {
   border: 0.5pt solid var(--line);
   padding: 1mm 1.4mm;
@@ -95,26 +95,26 @@ html, body { margin: 0; padding: 0; }
 
 .kv-table td { border: 0.5pt solid var(--line); padding: 0.7mm 1.4mm; }
 .kv-table .k { font-weight: 700; width: 26mm; white-space: nowrap; }
-.kv-table .v { font-size: 6.6pt; }
+.kv-table .v { font-size: calc(6.6pt * var(--font-scale, 1)); }
 
 /* ---- Omslag/titel ---- */
 .panel-cover { display: flex; flex-direction: column; }
 /* Logon innanför panelens padding så den inte hamnar utanför marginalen. */
 .sbf-logo { position: absolute; top: var(--pad); right: var(--pad); width: 16mm; height: auto; }
 .cover-title {
-  font-size: 19pt; font-weight: 400; letter-spacing: 0.5pt;
+  font-size: calc(19pt * var(--font-scale, 1)); font-weight: 400; letter-spacing: 0.5pt;
   margin-top: 22mm; line-height: 1.05;
 }
-.cover-for { font-weight: 700; font-size: 8pt; margin-top: 3mm; }
+.cover-for { font-weight: 700; font-size: calc(8pt * var(--font-scale, 1)); margin-top: 3mm; }
 .cover-players { margin-top: 2mm; border-bottom: 0.6pt solid var(--line); padding-bottom: 1.5mm; }
-.cover-players .pl-name { font-style: italic; color: var(--red); font-size: 15pt; }
-.cover-players .pl-num { font-weight: 700; font-size: 9pt; margin-right: 4mm; }
+.cover-players .pl-name { font-style: italic; color: var(--red); font-size: calc(15pt * var(--font-scale, 1)); }
+.cover-players .pl-num { font-weight: 700; font-size: calc(9pt * var(--font-scale, 1)); margin-right: 4mm; }
 .cover-row { display: flex; align-items: baseline; gap: 3mm; border-bottom: 0.6pt solid var(--line); padding: 1.5mm 0; }
-.cover-row .lbl { font-weight: 700; font-size: 8pt; }
-.cover-row .val { font-size: 10pt; }
-.cover-row .val.big { font-size: 15pt; font-weight: 700; }
+.cover-row .lbl { font-weight: 700; font-size: calc(8pt * var(--font-scale, 1)); }
+.cover-row .val { font-size: calc(10pt * var(--font-scale, 1)); }
+.cover-row .val.big { font-size: calc(15pt * var(--font-scale, 1)); font-weight: 700; }
 .cover-special { margin-top: 3mm; }
-.cover-special .lbl { font-weight: 700; font-size: 8pt; }
+.cover-special .lbl { font-weight: 700; font-size: calc(8pt * var(--font-scale, 1)); }
 .cover-special .special-val { border-bottom: 0.6pt solid var(--line); min-height: 8mm; margin-top: 1mm; }
 
 /* ---- Ark/imposition (endast för WeasyPrint) ---- */
