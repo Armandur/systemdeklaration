@@ -324,6 +324,19 @@ def render_sheet_html(d: dict, imposition: dict | None = None) -> str:
     cut_w_mm = 0.12 if imp.get("center_lines") else 0.0
     fit_w = panel_w - cut_w_mm
     fit_h = panel_h - cut_w_mm
+    # Bindningsmarginal (gutter) OCH trim krymper panelens verkliga innehållsyta,
+    # men den fristående mätningen har dem inte -> utan denna justering räknar
+    # autofit row_fill för en för STOR yta och tabellen svämmar över (särskilt
+    # nedre panelen vid sidkanten -> spiller sista raden till en tredje sida).
+    # Gutter (bindningskant) + trim (motsatt kant) ligger båda vinkelrätt mot
+    # samma axel: horisontellt för left/right-bindning, vertikalt för top/bottom.
+    bm = imp.get("binding_margin_mm", 0) or 0
+    tm = imp.get("trim_first_mm", 0) or 0
+    edge_loss = bm + tm  # konservativt: dra bort båda (trimmen gäller kort 1/2)
+    if imp.get("binding_edge", "left") in ("left", "right"):
+        fit_w -= edge_loss
+    else:
+        fit_h -= edge_loss
     panel_scales, opening_row_fill = _server_autofit(d, fit_w, fit_h, logo_src)
     tmpl = _env.get_template("sheet.html")
     return tmpl.render(d=d, imp=imp, front_slots=front, back_slots=back,
