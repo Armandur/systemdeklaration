@@ -189,8 +189,16 @@ previewFrame.addEventListener("load", () => {
 // Panelordningen i preview.html är cover, opening, defense, leads.
 const AUTOFIT_ORDER = ["cover", "opening", "defense", "leads"];
 const AUTOFIT_MIN = 0.6;
-const AUTOFIT_MAX = 1.4;   // autofit får växa över 1.0 för att fylla ut glesa paneler
-const AUTOFIT_TOL = 2; // samma tolerans som checkOverflow
+// Tak = 1.0: att växa texten över designstorleken spränger de fasta
+// kolumnbredderna/rubrikerna (tabellen har ingen horisontell plats att växa på).
+// Autofit krymper bara. (Tillväxt kräver att HELA panelen skalas proportionellt
+// - se backlog.)
+const AUTOFIT_MAX = 1.0;
+const AUTOFIT_TOL = 2;
+// Extra krympning på RESULTATET (inte fit-checken): scrollHeight kan bara säga
+// ryms/svämmar-över (binärt, klampad av overflow:hidden), så marginalen mot
+// WeasyPrints avvikande textmått läggs som en faktor på den funna skalan.
+const AUTOFIT_SAFETY = 0.96;
 
 function _fits(panel) {
   return panel.scrollHeight <= panel.clientHeight + AUTOFIT_TOL;
@@ -201,18 +209,15 @@ function _fitsAt(panel, s) {
 }
 
 function autofitPanel(panel) {
-  // Får inte plats ens vid golvet -> lämna golvet (overflow-varningen kvarstår).
-  if (!_fitsAt(panel, AUTOFIT_MIN)) return AUTOFIT_MIN;
-  // Passar vid taket -> använd taket (kapa tillväxten).
-  if (_fitsAt(panel, AUTOFIT_MAX)) return AUTOFIT_MAX;
-  // Binärsök största skala i [MIN, MAX] som fortfarande passar (krymper ELLER växer).
+  if (_fitsAt(panel, AUTOFIT_MAX)) return AUTOFIT_MAX;      // ryms redan vid 1.0
+  if (!_fitsAt(panel, AUTOFIT_MIN)) return AUTOFIT_MIN;     // ryms inte ens vid golvet
+  // Binärsök största skala i [MIN, 1.0] som fortfarande passar.
   let lo = AUTOFIT_MIN, hi = AUTOFIT_MAX;
   for (let i = 0; i < 16; i++) {
     const mid = (lo + hi) / 2;
     if (_fitsAt(panel, mid)) lo = mid; else hi = mid;
   }
-  // Golva (inte runda) så den applicerade skalan garanterat fortsatt passar.
-  const result = Math.floor(lo * 1000) / 1000;
+  const result = Math.max(AUTOFIT_MIN, Math.floor(lo * AUTOFIT_SAFETY * 1000) / 1000);
   panel.style.setProperty("--font-scale", String(result));
   return result;
 }
