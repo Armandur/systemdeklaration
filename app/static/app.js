@@ -189,24 +189,27 @@ previewFrame.addEventListener("load", () => {
 // Panelordningen i preview.html är cover, opening, defense, leads.
 const AUTOFIT_ORDER = ["cover", "opening", "defense", "leads"];
 const AUTOFIT_MIN = 0.6;
-const AUTOFIT_TOL = 2; // samma tolerans som checkOverflow (rad 193)
+const AUTOFIT_MAX = 1.4;   // autofit får växa över 1.0 för att fylla ut glesa paneler
+const AUTOFIT_TOL = 2; // samma tolerans som checkOverflow
 
 function _fits(panel) {
   return panel.scrollHeight <= panel.clientHeight + AUTOFIT_TOL;
 }
+function _fitsAt(panel, s) {
+  panel.style.setProperty("--font-scale", String(s));
+  return _fits(panel);
+}
 
 function autofitPanel(panel) {
-  panel.style.setProperty("--font-scale", "1");
-  if (_fits(panel)) return 1;
-  panel.style.setProperty("--font-scale", String(AUTOFIT_MIN));
-  if (!_fits(panel)) return AUTOFIT_MIN; // får inte plats ens vid golvet
-  // Binärsök mellan AUTOFIT_MIN (passar) och 1 (passar inte) efter största
-  // skala som fortfarande passar.
-  let lo = AUTOFIT_MIN, hi = 1;
-  for (let i = 0; i < 14; i++) {
+  // Får inte plats ens vid golvet -> lämna golvet (overflow-varningen kvarstår).
+  if (!_fitsAt(panel, AUTOFIT_MIN)) return AUTOFIT_MIN;
+  // Passar vid taket -> använd taket (kapa tillväxten).
+  if (_fitsAt(panel, AUTOFIT_MAX)) return AUTOFIT_MAX;
+  // Binärsök största skala i [MIN, MAX] som fortfarande passar (krymper ELLER växer).
+  let lo = AUTOFIT_MIN, hi = AUTOFIT_MAX;
+  for (let i = 0; i < 16; i++) {
     const mid = (lo + hi) / 2;
-    panel.style.setProperty("--font-scale", String(mid));
-    if (_fits(panel)) lo = mid; else hi = mid;
+    if (_fitsAt(panel, mid)) lo = mid; else hi = mid;
   }
   // Golva (inte runda) så den applicerade skalan garanterat fortsatt passar.
   const result = Math.floor(lo * 1000) / 1000;

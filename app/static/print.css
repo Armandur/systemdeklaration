@@ -77,7 +77,7 @@ html, body { margin: 0; padding: 0; }
 .op-table .c-svar { font-size: calc(6.2pt * var(--font-scale, 1)); line-height: 1.05; }
 /* Fördela panelhöjden på dataraderna (height:100% sträcker inte raderna i
    WeasyPrint) så tabellen fyller A6-panelen istället för tomrum under. */
-.op-table tbody td { padding-top: 2mm; padding-bottom: 2mm; }
+.op-table tbody td { padding-top: 1.2mm; padding-bottom: 1.2mm; }
 
 /* ---- Sektioner (försvar, utspel, markeringar) ---- */
 .sect { margin-bottom: 1.6mm; }
