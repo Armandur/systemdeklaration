@@ -28,6 +28,12 @@ function expandSuits(v) {
   return v.replace(/\/[cdhs]/gi, (m) => SUIT_MAP[m.toLowerCase()]);
 }
 
+// ---- 278: normalisera emoji-varianter av färgsymboler (♥️ = U+2665 U+FE0F) ----
+// till rena glyfer utan variation selector (text U+FE0E eller emoji U+FE0F).
+function normalizeSuits(v) {
+  return v.replace(/([♠♣♥♦])[︎️]/g, "$1");
+}
+
 // ---- bind formulär <-> state ----
 const fields = [...document.querySelectorAll("[data-path]")];
 
@@ -52,10 +58,13 @@ function formToStateField(el) {
     return;
   }
   let v = el.value;
+  const norm = normalizeSuits(v);
+  if (norm !== v) v = norm;
   if (v.includes("/")) {
     const exp = expandSuits(v);
-    if (exp !== v) { v = exp; el.value = v; }
+    if (exp !== v) v = exp;
   }
+  if (v !== el.value) el.value = v;
   setPath(state, el.dataset.path, v);
 }
 
