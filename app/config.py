@@ -59,16 +59,32 @@ def empty_declaration() -> dict:
 
 
 def render_suits(text: str) -> str:
-    """Wrappa färgsymboler i span med per-färg-klass. Escapar övrig text."""
+    """Wrappa färgsymboler i span med per-färg-klass. Escapar övrig text.
+
+    Stödjer en fejk-markdown för understrykning: `_text_` -> `<u>text</u>`.
+    Ett `_` växlar understrykningsläge; `_`-tecknen konsumeras och syns inte.
+    Oavslutat `_` vid strängslut stängs automatiskt."""
     from markupsafe import escape
     out = []
+    underline = False
     for ch in text or "":
+        if ch == "_":
+            if underline:
+                out.append("</u>")
+            else:
+                out.append("<u>")
+            underline = not underline
+            continue
         cls = SUIT_CLASS.get(ch)
         if cls:
             out.append(f'<span class="{cls}">{ch}︎</span>')
+        elif ch == "\n":
+            out.append("<br>")
         else:
             out.append(str(escape(ch)))
-    return "".join(out).replace("\n", "<br>")
+    if underline:
+        out.append("</u>")
+    return "".join(out)
 
 
 def render_stacked(text: str) -> str:

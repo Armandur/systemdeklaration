@@ -40,8 +40,8 @@
     "ovriga": "*Mot stark Kl. 1NT 55 Lå    2♣ ngn 6:a\n2♦ 55(4) Hö   2♥ 5Hj 4Lå   2♠ 5Sp 4Lå"
   },
   "utspel": {
-    "mot_farg": "11-regeln      xxx     xx",
-    "mot_nt": "11-regeln      xxx     xx"
+    "mot_farg": "11-regeln x_X_x _X_x",
+    "mot_nt": "11-regeln x_X_x _X_x"
   },
   "vandor": {
     "genom_spelforaren": "2:a – 4:e",
