@@ -14,6 +14,12 @@
 .topactions button { padding: .4rem .7rem; }
 .themebtn { display: inline-flex; align-items: center; justify-content: center; }
 .themebtn svg { display: block; }
+/* 307: på mobil tar namnruta, väljare och Ny hela bredden (var sin rad). */
+@media (max-width: 560px) {
+  .topactions #decName, .topactions #decLoad, .topactions #btnNew {
+    flex: 1 1 100%; width: 100%; min-width: 0;
+  }
+}
 
 .layout { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 1rem; padding: 1rem; }
 @media (max-width: 900px) { .layout { grid-template-columns: 1fr; } }
