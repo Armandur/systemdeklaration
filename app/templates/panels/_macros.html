@@ -19,8 +19,8 @@
 </div>
 {% endmacro %}
 
-{% macro panel_opening(d, scale=1) %}
-<div class="panel panel-opening" style="--font-scale: {{ scale }}">
+{% macro panel_opening(d, scale=1, row_fill=0) %}
+<div class="panel panel-opening" style="--font-scale: {{ scale }}; --row-fill: {{ row_fill }}mm">
   <table class="op-table">
     <thead>
       <tr>
