@@ -64,15 +64,15 @@ html, body { margin: 0; padding: 0; }
 .op-table thead th { font-size: calc(6.5pt * var(--font-scale, 1)); font-weight: 700; vertical-align: bottom; }
 /* Vertikala kolumnrubriker: rotera en span 90 grader (läses nerifrån och upp),
    fast radhöjd så texten får plats. Transform funkar lika i WeasyPrint och webb. */
-/* Roterade rubriker: absolut-centrerade i en cell med garanterad höjd (auto-
-   höjd för transform-element är opålitlig i WeasyPrint -> texten klipptes upptill). */
-.op-table th.rot { position: relative; height: 13mm; padding: 0; }
+/* Smala kolumnrubriker: upprättstående bokstäver staplade en per rad (via
+   stacked-filtret + <br>). Vanlig text -> centreras och renderas pålitligt i
+   både WeasyPrint och webbläsare (till skillnad från roterad/writing-mode-text). */
+.op-table th.rot { text-align: center; vertical-align: middle; padding: 0.5mm 0; }
 .op-table th.rot .vtext {
-  position: absolute; top: 50%; left: 50%;
-  transform: translate(-50%, -50%) rotate(-90deg);
-  white-space: nowrap;
+  display: inline-block;
+  line-height: 1.0;
   font-weight: 400;
-  font-size: calc(5pt * var(--font-scale, 1));
+  font-size: calc(5.5pt * var(--font-scale, 1));
 }
 .op-table .c-prickar { width: 5mm; }
 .op-table .c-bud { width: 13mm; font-weight: 700; font-size: calc(8.5pt * var(--font-scale, 1)); text-align: center; }

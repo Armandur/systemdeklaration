@@ -71,6 +71,14 @@ def render_suits(text: str) -> str:
     return "".join(out).replace("\n", "<br>")
 
 
+def render_stacked(text: str) -> str:
+    """En bokstav per rad (upprättstående, staplad) - för smala kolumnrubriker.
+    Mellanslag blir en tom rad (ordgap). Robustare än roterad text i WeasyPrint."""
+    from markupsafe import escape
+    chars = ["" if c == " " else str(escape(c)) for c in (text or "")]
+    return "<br>".join(chars)
+
+
 def render_bud(token: str) -> str:
     """Rendera ett bud-token (t.ex. '1C', '3CDHS') med färgade symboler."""
     i = 0

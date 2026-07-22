@@ -20,6 +20,7 @@ def _suit_only(s: str) -> Markup:
 _env.filters["suits"] = lambda t: Markup(config.render_suits(t))
 _env.filters["bud"] = lambda t: Markup(config.render_bud(t))
 _env.filters["bud_suit"] = _suit_only
+_env.filters["stacked"] = lambda t: Markup(config.render_stacked(t))
 
 
 @lru_cache(maxsize=1)
