@@ -58,6 +58,18 @@
         </div>
         <label>Öppningsbud som kan kräva speciella försvarsmetoder
           <input type="text" data-path="meta.special_forsvar"></label>
+        <div class="grid">
+          <label>Logotyp
+            <select data-path="display.logo" id="logoMode">
+              <option value="sbf">SBF-logo</option>
+              <option value="custom">Egen bild</option>
+              <option value="none">Ingen</option>
+            </select>
+          </label>
+          <label>Egen logotyp (bild)
+            <input type="file" id="logoFile" accept="image/*">
+          </label>
+        </div>
       </article>
 
       <article>

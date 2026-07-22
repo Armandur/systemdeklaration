@@ -3,7 +3,7 @@
 
 {% macro panel_cover(d, logo_src) %}
 <div class="panel panel-cover">
-  <img class="sbf-logo" src="{{ logo_src }}" alt="Sveriges Bridgeförbund">
+  {% if logo_src %}<img class="sbf-logo" src="{{ logo_src }}" alt="Sveriges Bridgeförbund">{% endif %}
   <div class="cover-title">SYSTEM-<br>DEKLARATION</div>
   <div class="cover-for">För</div>
   <div class="cover-players">

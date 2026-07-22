@@ -78,7 +78,9 @@ for (const el of fields) {
 const schedulePreview = debounce(renderPreview, 350);
 const scheduleAutosave = debounce(persistLocal, 500);
 for (const el of fields) {
-  const evt = el.type === "checkbox" ? "change" : "input";
+  // Select fyrar inte alltid "input" tillförlitligt över browsers - lyssna
+  // på "change" för dem (liksom för checkboxar), "input" för textfält.
+  const evt = el.type === "checkbox" || el.tagName === "SELECT" ? "change" : "input";
   el.addEventListener(evt, () => {
     formToStateField(el);
     if (el.tagName === "TEXTAREA") autosize(el);
@@ -88,6 +90,23 @@ for (const el of fields) {
     scheduleAutosave();
   });
 }
+
+// ---- 273: logotyp på omslaget - egen uppladdad bild som data-URI ----
+document.getElementById("logoFile").addEventListener("change", (e) => {
+  const file = e.target.files && e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    setPath(state, "display.logo_data", reader.result);
+    setPath(state, "display.logo", "custom");
+    document.getElementById("logoMode").value = "custom";
+    if (exactMode) setLiveMode();
+    schedulePreview();
+    scheduleAutosave();
+  };
+  reader.onerror = () => showToast("Kunde inte läsa bildfilen", "err");
+  reader.readAsDataURL(file);
+});
 
 // Kör om autosize på alla textareas vid omstorlek (rotation / responsivt läge),
 // annars blir höjder uträknade vid en bredd stale när bredden ändras.
@@ -223,6 +242,14 @@ document.getElementById("btnExact").addEventListener("click", () => {
   else refreshExact();
 });
 
+// ---- slå ihop en laddad payload med EMPTY - täcker även äldre deklarationer
+// som saknar nyare display-fält (t.ex. logo/logo_data tillagda i 273) ----
+function mergeWithEmpty(payload) {
+  const merged = Object.assign(structuredClone(EMPTY), payload);
+  merged.display = Object.assign(structuredClone(EMPTY.display), payload.display || {});
+  return merged;
+}
+
 // ---- 265: autospara utkast i localStorage ----
 const LS_KEY = "sysdek:autosave";
 function persistLocal() {
@@ -239,7 +266,7 @@ function restoreLocal() {
     const saved = JSON.parse(raw);
     if (!saved || !saved.payload) return false;
     if (JSON.stringify(saved.payload) === JSON.stringify(EMPTY)) return false;
-    state = Object.assign(structuredClone(EMPTY), saved.payload);
+    state = mergeWithEmpty(saved.payload);
     currentId = saved.currentId ?? null;
     document.getElementById("decName").value = saved.name || "";
     return true;
@@ -313,7 +340,7 @@ document.getElementById("decLoad").addEventListener("change", async (e) => {
   if (!id) return;
   const d = await apiFetch(`/api/declarations/${id}`);
   currentId = d.id;
-  state = Object.assign(structuredClone(EMPTY), d.payload);
+  state = mergeWithEmpty(d.payload);
   document.getElementById("decName").value = d.name;
   if (exactMode) setLiveMode();
   stateToForm();

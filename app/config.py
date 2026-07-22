@@ -53,7 +53,7 @@ def empty_declaration() -> dict:
         "utspel": {"mot_farg": "", "mot_nt": ""},
         "vandor": {"genom_spelforaren": "", "i_partnerns_farg": ""},
         "markeringar": {"styrka": "", "langd": "", "ovriga": ""},
-        "display": {"four_color": False},
+        "display": {"four_color": False, "logo": "sbf", "logo_data": ""},
     }
 
 

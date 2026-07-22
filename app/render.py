@@ -28,6 +28,18 @@ def _logo_data_uri() -> str:
     return "data:image/png;base64," + base64.b64encode(raw).decode()
 
 
+def _resolve_logo(d: dict) -> str | None:
+    """Avgör vilken logotyp-bild (om någon) som ska visas på omslaget,
+    styrt av display.logo: 'sbf' (default) | 'none' | 'custom'."""
+    disp = d.get("display", {}) or {}
+    mode = disp.get("logo", "sbf")
+    if mode == "none":
+        return None
+    if mode == "custom":
+        return disp.get("logo_data") or None
+    return _logo_data_uri()
+
+
 def _print_css() -> Markup:
     # Ej cachad: läses fritt från disk så CSS-ändringar syns direkt utan
     # serveromstart (filen är liten). Logon nedan är fortsatt cachad.
@@ -89,7 +101,7 @@ def render_sheet_html(d: dict, imposition: dict | None = None) -> str:
     panel_h = round(content_h / 2, 3)
     tmpl = _env.get_template("sheet.html")
     return tmpl.render(d=d, imp=imp, front_slots=front, back_slots=back,
-                       logo_src=_logo_data_uri(), print_css=_print_css(),
+                       logo_src=_resolve_logo(d), print_css=_print_css(),
                        page_margin_mm=margin, content_w=content_w, content_h=content_h,
                        panel_w=panel_w, panel_h=panel_h)
 
@@ -97,7 +109,7 @@ def render_sheet_html(d: dict, imposition: dict | None = None) -> str:
 def render_preview_html(d: dict) -> str:
     """Fristående HTML som visar alla fyra paneler (för webb-iframe)."""
     tmpl = _env.get_template("preview.html")
-    return tmpl.render(d=d, logo_src=_logo_data_uri(), print_css=_print_css())
+    return tmpl.render(d=d, logo_src=_resolve_logo(d), print_css=_print_css())
 
 
 def render_pdf(d: dict, imposition: dict | None = None) -> bytes:
