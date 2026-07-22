@@ -179,35 +179,19 @@ html, body { margin: 0; padding: 0; }
 .emark-h { position: absolute; height: 0; width: 0; border-top: var(--cut-w) solid var(--cut-c); z-index: 5; }
 .emark-v { position: absolute; width: 0; height: 0; border-left: var(--cut-w) solid var(--cut-c); z-index: 5; }
 
-/* Pappas fynd 4: kortare förstakort. Streckad skärlinje nära den kant kortet
-   ska kortas från (öppningskanten, motsatt bindningskanten) - horisontell
-   (bottom/top) eller vertikal (left/right) beroende på bindningsval. */
-.trim-guide { position: absolute; z-index: 5; }
-.trim-guide.bottom, .trim-guide.top { left: 0; right: 0; }
-.trim-guide.left, .trim-guide.right { top: 0; bottom: 0; }
-
-.trim-guide.bottom { border-top: 0.4pt dashed var(--red); }
-.trim-guide.top { border-bottom: 0.4pt dashed var(--red); }
-.trim-guide.right { border-left: 0.4pt dashed var(--red); }
-.trim-guide.left { border-right: 0.4pt dashed var(--red); }
-
-.trim-guide .trim-lbl {
-  position: absolute; font-size: 5pt; color: var(--red); white-space: nowrap;
-}
-/* Horisontella varianter: label i den bortskurna remsan mellan linjen och
-   respektive kant (bottom -> under linjen mot nederkant, top -> ovanför
-   linjen mot överkant). */
-.trim-guide.bottom .trim-lbl { right: 1mm; top: 0.4mm; }
-.trim-guide.top .trim-lbl { right: 1mm; bottom: 0.4mm; }
-/* Vertikala varianter: texten roterad 90° för att få plats i den smala
-   remsan (right -> remsan ligger till höger om linjen, left -> till vänster). */
-.trim-guide.right .trim-lbl {
-  left: 0.6mm; top: 40%;
-  transform: rotate(90deg);
-  transform-origin: left top;
-}
-.trim-guide.left .trim-lbl {
-  right: 0.6mm; top: 40%;
-  transform: rotate(-90deg);
-  transform-origin: right top;
-}
+/* Pappas fynd 4: kortare förstakort (eller kort 2, styrbart via trim_card).
+   Skärmarkeringen är två korta, tunna ticks i samma stil som .cmark/.emark-*
+   (tunn mörkgrå/svart linje, INGEN röd färg, INGEN streckning, ingen text) -
+   en vid vardera av panelens två kanter som är vinkelräta mot snittet, precis
+   där snittlinjen skulle möta den kanten. Ingen genomgående linje ritas. */
+.trim-tick { position: absolute; z-index: 5; }
+/* Lodräta ticks (vänster-/högertrim): stump vid över- och nederkant som
+   markerar x-positionen för det lodräta snittet. */
+.trim-tick.v { width: 0; height: 3mm; border-left: var(--cut-w) solid var(--cut-c); }
+.trim-tick.v.top { top: 0; }
+.trim-tick.v.bottom { bottom: 0; }
+/* Vågräta ticks (topp-/bottentrim): stump vid vänster- och högerkant som
+   markerar y-positionen för det vågräta snittet. */
+.trim-tick.h { height: 0; width: 3mm; border-top: var(--cut-w) solid var(--cut-c); }
+.trim-tick.h.left { left: 0; }
+.trim-tick.h.right { right: 0; }

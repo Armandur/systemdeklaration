@@ -143,6 +143,7 @@ function imposition() {
     back_swap: document.getElementById("impSwap").checked,
     back_rotate: document.getElementById("impRotate").checked,
     trim_first_mm: Number(document.getElementById("impTrim").value) || 0,
+    trim_card: Number(document.getElementById("impTrimCard").value) || 1,
     cut_marks: document.getElementById("impCut").checked,
     center_lines: document.getElementById("impCenter").checked,
     binding_margin_mm: Number(document.getElementById("impBinding").value) || 0,
@@ -154,7 +155,7 @@ function imposition() {
 const sig = () => JSON.stringify({ p: state, i: imposition() });
 
 const scheduleExact = debounce(() => { if (exactMode) refreshExact(); }, 400);
-for (const id of ["impSwap", "impRotate", "impTrim", "impCut", "impCenter", "impBinding", "impBindEdge", "impPageMargin"]) {
+for (const id of ["impSwap", "impRotate", "impTrim", "impTrimCard", "impCut", "impCenter", "impBinding", "impBindEdge", "impPageMargin"]) {
   const el = document.getElementById(id);
   el.addEventListener("input", scheduleExact);
   el.addEventListener("change", scheduleExact);

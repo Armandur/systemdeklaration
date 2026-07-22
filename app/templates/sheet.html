@@ -65,9 +65,13 @@
       {% endif %}
     {% endif %}
     {% if s.trim %}
-      <div class="trim-guide {{ s.trim_side }}" style="{{ s.trim_side }}:{{ s.trim }}mm">
-        <span class="trim-lbl">skär kort 1 här ({{ s.trim }} mm kortare)</span>
-      </div>
+      {% if s.trim_side in ('left', 'right') %}
+        <span class="trim-tick v top" style="{{ s.trim_side }}:{{ s.trim }}mm"></span>
+        <span class="trim-tick v bottom" style="{{ s.trim_side }}:{{ s.trim }}mm"></span>
+      {% else %}
+        <span class="trim-tick h left" style="{{ s.trim_side }}:{{ s.trim }}mm"></span>
+        <span class="trim-tick h right" style="{{ s.trim_side }}:{{ s.trim }}mm"></span>
+      {% endif %}
     {% endif %}
   </div>
 {% endmacro %}

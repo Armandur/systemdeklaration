@@ -124,10 +124,16 @@
           <label><input type="checkbox" id="impRotate"> Rotera baksidan 180°</label>
         </div>
         <div class="grid">
-          <label>Korta kort 1 (mm)<input type="number" id="impTrim" value="4" min="0" max="20" step="1"></label>
+          <label>Korta kort (mm)<input type="number" id="impTrim" value="4" min="0" max="20" step="1"></label>
           <label><input type="checkbox" id="impCut" checked> Skärmarkeringar (hörn)</label>
         </div>
         <div class="grid">
+          <label>Korta kort
+            <select id="impTrimCard">
+              <option value="1">Kort 1</option>
+              <option value="2">Kort 2</option>
+            </select>
+          </label>
           <label><input type="checkbox" id="impCenter" checked> Mittlinjer för skärning (2x2)</label>
         </div>
         <div class="grid">
