@@ -61,14 +61,14 @@ html, body { margin: 0; padding: 0; }
 .op-table thead th { font-size: calc(6.5pt * var(--font-scale, 1)); font-weight: 700; vertical-align: bottom; }
 /* Vertikala kolumnrubriker: rotera en span 90 grader (läses nerifrån och upp),
    fast radhöjd så texten får plats. Transform funkar lika i WeasyPrint och webb. */
-.op-table th.rot { height: 7mm; padding: 1mm 0; text-align: center; vertical-align: middle; }
+.op-table th.rot { text-align: center; vertical-align: middle; padding: 1mm 0; }
 .op-table th.rot .vtext {
   display: inline-block;
   transform: rotate(-90deg);
   transform-origin: center;
   white-space: nowrap;
   font-weight: 400;
-  font-size: calc(5.5pt * var(--font-scale, 1));
+  font-size: calc(5pt * var(--font-scale, 1));
 }
 .op-table .c-prickar { width: 5mm; }
 .op-table .c-bud { width: 13mm; font-weight: 700; font-size: calc(8.5pt * var(--font-scale, 1)); text-align: center; }
