@@ -45,8 +45,9 @@ starten (`init_db()` skapar katalogen och tabellen).
 
 ## Drift-noter
 
-- CSRF-cookien (`app/csrf.py`) sätts med `secure=False` eftersom trafiken
-  internt går över http. Ligger appen bakom TLS (reverse proxy) bör detta
-  ändras till `True`.
+- CSRF-cookien (`app/csrf.py`) sätts med `secure=True` - appen nås via NPM
+  med ssl_forced (https://dekl.pettersson-vik.se). Körs appen någon gång rakt
+  över http (t.ex. lokal dev på ubuntu-ai:8008) skickar webbläsaren inte
+  cookien, så CSRF-skyddade sparningar kräver https.
 - `data/sample.json` följer INTE med i imagen och läses aldrig i runtime -
   den används bara för demo/tester i utvecklingsmiljön.

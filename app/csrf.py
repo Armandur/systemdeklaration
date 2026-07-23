@@ -43,7 +43,7 @@ class CSRFMiddleware(BaseHTTPMiddleware):
                 secrets.token_urlsafe(32),
                 httponly=False,  # JS måste kunna läsa den för att skicka som header
                 samesite="lax",
-                secure=False,  # sätt True bakom TLS
+                secure=True,  # appen nås bara via TLS (NPM, ssl_forced) i drift
                 path="/",
             )
 
