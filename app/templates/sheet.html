@@ -37,7 +37,13 @@
   vi slipper dubbelritade/överlappande spann.
 #}
 {% macro slot(s, cut=True, idx=0) %}
-  <div class="slot {% if s.rot %}rot180{% endif %}"{% if imp.binding_margin_mm %} style="--gutter-{{ s.gutter }}: {{ imp.binding_margin_mm }}mm"{% endif %}>
+  {# Gutter (bindningsmarginal) och trim-padding (reserverar utrymme innanför
+     snittlinjen, se render._build_slots) sätts båda som inline custom
+     properties på .slot - print.css läser dem via var(...,0mm) på .panel. #}
+  {% set style_parts = [] %}
+  {% if imp.binding_margin_mm %}{% set _ = style_parts.append("--gutter-" ~ s.gutter ~ ": " ~ imp.binding_margin_mm ~ "mm") %}{% endif %}
+  {% if s.trim_pad %}{% set _ = style_parts.append("--trim-pad-" ~ s.trim_side ~ ": " ~ s.trim_pad ~ "mm") %}{% endif %}
+  <div class="slot {% if s.rot %}rot180{% endif %}"{% if style_parts %} style="{{ style_parts|join('; ') }}"{% endif %}>
     {% if s.blank %}
       <div class="panel"></div>
     {% else %}

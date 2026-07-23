@@ -240,6 +240,12 @@ def _mirror_lr(edge: str) -> str:
     return _MIRROR_LR[edge]
 
 
+# PAD måste hållas i synk med --pad i print.css (panelens grundpadding).
+# Trim-linjen ritas trim_first_mm in från öppningskanten - finns redan PAD mm
+# padding där (samma mekanism som gutter), behövs bara MELLANSKILLNADEN extra
+# så innehållet hamnar innanför snittlinjen i stället för utanför den.
+PAD = 4
+
 # Kort 1 = omslag (fram) + öppningsbud (bak). Kort 2 = försvar (fram) +
 # utspel/markeringar (bak). Trim gäller kort 1 eller kort 2 (styrs av
 # imp["trim_card"], default 1: omslag + öppningsbud).
@@ -266,15 +272,22 @@ def _build_slots(imp: dict) -> tuple[list, list]:
     front_gutter = edge
     front_trim_side = _opposite(edge)
     # Framsida, radvis: [kort1=omslag, kort2=försvar] x 2 exemplar.
+    def _trim_pad_for(kind: str) -> float:
+        return max(0, _trim_for(kind) - PAD)
+
     front = [
         {"kind": "cover", "row": 0, "trim": _trim_for("cover"), "rot": False,
-         "gutter": front_gutter, "trim_side": front_trim_side},
+         "gutter": front_gutter, "trim_side": front_trim_side,
+         "trim_pad": _trim_pad_for("cover")},
         {"kind": "defense", "row": 0, "trim": _trim_for("defense"), "rot": False,
-         "gutter": front_gutter, "trim_side": front_trim_side},
+         "gutter": front_gutter, "trim_side": front_trim_side,
+         "trim_pad": _trim_pad_for("defense")},
         {"kind": "cover", "row": 1, "trim": _trim_for("cover"), "rot": False,
-         "gutter": front_gutter, "trim_side": front_trim_side},
+         "gutter": front_gutter, "trim_side": front_trim_side,
+         "trim_pad": _trim_pad_for("cover")},
         {"kind": "defense", "row": 1, "trim": _trim_for("defense"), "rot": False,
-         "gutter": front_gutter, "trim_side": front_trim_side},
+         "gutter": front_gutter, "trim_side": front_trim_side,
+         "trim_pad": _trim_pad_for("defense")},
     ]
     # Baksidorna som ska ligga bakom: kort1->öppningsbud, kort2->utspel.
     if imp.get("back_swap", True):
@@ -295,7 +308,8 @@ def _build_slots(imp: dict) -> tuple[list, list]:
     back_trim_side = _mirror_lr(_opposite(edge))
     back_rows = [0, 0, 1, 1]
     back = [{"kind": k, "row": r, "trim": _trim_for(k), "rot": rot,
-             "gutter": back_gutter, "trim_side": back_trim_side}
+             "gutter": back_gutter, "trim_side": back_trim_side,
+             "trim_pad": _trim_pad_for(k)}
             for k, r in zip(base, back_rows)]
     if rot:
         # Kortsidesvändning: hela baksidan roteras, vänd ordningen. "row"
@@ -309,6 +323,7 @@ def _build_slots(imp: dict) -> tuple[list, list]:
             if s["row"] == 1:
                 s["blank"] = True
                 s["trim"] = 0
+                s["trim_pad"] = 0
 
     return front, back
 

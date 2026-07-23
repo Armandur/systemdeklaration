@@ -38,7 +38,11 @@ html, body { margin: 0; padding: 0; }
   box-sizing: border-box;
   width: var(--panel-w);
   height: var(--panel-h);
-  padding: calc(var(--pad) + var(--gutter-top, 0mm)) calc(var(--pad) + var(--gutter-right, 0mm)) calc(var(--pad) + var(--gutter-bottom, 0mm)) calc(var(--pad) + var(--gutter-left, 0mm));
+  /* Gutter (bindningsmarginal) reserverar utrymme på bindningskanten, trim-pad
+     reserverar utrymme på öppningskanten (innanför den utritade snittlinjen -
+     se render._build_slots/sheet.html slot()). Båda ärvs som custom
+     properties från .slot ner till .panel, defaultar till 0mm var för sig. */
+  padding: calc(var(--pad) + var(--gutter-top, 0mm) + var(--trim-pad-top, 0mm)) calc(var(--pad) + var(--gutter-right, 0mm) + var(--trim-pad-right, 0mm)) calc(var(--pad) + var(--gutter-bottom, 0mm) + var(--trim-pad-bottom, 0mm)) calc(var(--pad) + var(--gutter-left, 0mm) + var(--trim-pad-left, 0mm));
   background: #fff;
   color: var(--ink);
   font-family: "DejaVu Sans", Arial, sans-serif;
