@@ -90,8 +90,17 @@
               <td class="budcell">{{ b | bud }}</td>
               <td class="mcell" data-label="Prickar"><input type="text" class="mini" data-path="oppningsbud.{{ loop.index0 }}.prickar"></td>
               <td class="mcell" data-label="Kort"><input type="text" class="mini" data-path="oppningsbud.{{ loop.index0 }}.ant_kort"></td>
-              <td class="wide" data-label="Öppningsbud"><textarea rows="1" data-path="oppningsbud.{{ loop.index0 }}.oppning"></textarea></td>
-              <td class="wide" data-label="Svar"><textarea rows="1" data-path="oppningsbud.{{ loop.index0 }}.svar"></textarea></td>
+              <td class="wide" data-label="Öppningsbud">
+                {% if loop.index0 > 0 %}
+                <label class="mergechk"><input type="checkbox" data-path="oppningsbud.{{ loop.index0 }}.merge_up"> ⇡ slå ihop med ovan</label>
+                {% endif %}
+                <textarea rows="1" data-path="oppningsbud.{{ loop.index0 }}.oppning"></textarea>
+                <span class="mergehint">⤴ sammanslagen med ovan</span>
+              </td>
+              <td class="wide" data-label="Svar">
+                <textarea rows="1" data-path="oppningsbud.{{ loop.index0 }}.svar"></textarea>
+                <span class="mergehint">⤴ sammanslagen med ovan</span>
+              </td>
             </tr>
           {% endfor %}
           </tbody>

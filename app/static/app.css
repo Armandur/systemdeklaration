@@ -45,6 +45,22 @@ table.form-op .budcell { font-weight: 700; white-space: nowrap; font-size: .95re
 table.form-op input.mini { width: 3.2rem; text-align: center; margin: 0; }
 table.form-op textarea { margin: 0; min-height: 1.8rem; width: 100%; }
 
+/* 340: kryssruta för att slå ihop Öppningsbud/Svar-cellen med raden ovanför
+   (rowspan i PDF/preview). Hint syns bara när raden är hopslagen; textareorna
+   döljs då (cellen ovanför spänner hit i renderingen). */
+table.form-op label.mergechk {
+  display: flex; align-items: center; gap: .3rem;
+  font-size: .68rem; color: var(--pico-muted-color);
+  margin-bottom: .2rem; white-space: nowrap;
+}
+table.form-op label.mergechk input[type="checkbox"] { margin: 0; width: auto; }
+table.form-op .mergehint {
+  display: none; font-size: .75rem; font-style: italic;
+  color: var(--pico-muted-color);
+}
+table.form-op tr.merged td.wide textarea { display: none; }
+table.form-op tr.merged td.wide .mergehint { display: block; }
+
 /* 269: mobil - staplade kort istället för bred tabell. Desktop oförändrad. */
 @media (max-width: 560px) {
   table.form-op thead { display: none; }

@@ -45,7 +45,7 @@ def empty_declaration() -> dict:
                  "special_forsvar": ""},
         "oppningsbud": [
             {"bud": b, "prickar": "", "ant_kort": DEFAULT_KORT.get(b, ""),
-             "oppning": "", "svar": ""} for b in OPENING_ROWS
+             "oppning": "", "svar": "", "merge_up": False} for b in OPENING_ROWS
         ],
         "slamkonventioner": "",
         "ovriga_konventioner": "",
@@ -148,3 +148,28 @@ def render_bud(token: str) -> str:
         cls = SUIT_CLASS.get(glyph, "")
         parts.append(f'<span class="{cls}">{glyph}︎</span>')
     return "".join(parts)
+
+
+def opening_render(rows: list[dict]) -> list[dict]:
+    """Annotera öppningsbudsraderna med rowspan-info för Öppningsbud/Svar
+    (TASK-340). En START-rad (första raden i skelettet, alltid - ett
+    merge_up på rad 0 ignoreras - eller en rad vars merge_up är falskt)
+    får `_span` = 1 + antalet DIREKT följande rader med merge_up=True.
+    Dessa följande rader markeras `_merged=True`: deras Öppningsbud/Svar-
+    celler ska inte renderas alls (start-radens celler spänner ner till
+    dem via rowspan). Bud/Prickar/Ant kort hålls separata per rad oavsett
+    - bara de två sammanslagningsbara kolumnerna påverkas."""
+    out = []
+    n = len(rows)
+    i = 0
+    while i < n:
+        span = 1
+        j = i + 1
+        while j < n and rows[j].get("merge_up"):
+            span += 1
+            j += 1
+        out.append({**rows[i], "_span": span, "_merged": False})
+        for k in range(i + 1, i + span):
+            out.append({**rows[k], "_span": 1, "_merged": True})
+        i += span
+    return out

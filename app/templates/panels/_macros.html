@@ -32,13 +32,16 @@
       </tr>
     </thead>
     <tbody>
-      {% for r in d.oppningsbud %}
+      {% set orows = d.oppningsbud | opening_render %}
+      {% for r in orows %}
       <tr>
         <td class="c-prickar">{{ r.prickar }}</td>
         <td class="c-bud">{{ r.bud | bud }}</td>
         <td class="c-kort">{{ r.ant_kort }}</td>
-        <td class="c-opp">{{ r.oppning | suits }}</td>
-        <td class="c-svar">{{ r.svar | suits }}</td>
+        {% if not r._merged %}
+        <td class="c-opp"{% if r._span > 1 %} rowspan="{{ r._span }}"{% endif %}>{{ r.oppning | suits }}</td>
+        <td class="c-svar"{% if r._span > 1 %} rowspan="{{ r._span }}"{% endif %}>{{ r.svar | suits }}</td>
+        {% endif %}
       </tr>
       {% endfor %}
     </tbody>

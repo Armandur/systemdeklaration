@@ -42,10 +42,17 @@ function autosize(el) {
   el.style.height = "auto";
   el.style.height = el.scrollHeight + "px";
 }
+// ---- 340: rowspan-ihopslagning av Öppningsbud/Svar - visuell markering ----
+function updateMergeRowClass(el) {
+  const tr = el.closest("tr");
+  if (tr) tr.classList.toggle("merged", el.checked);
+}
 function stateToForm() {
   for (const el of fields) {
-    if (el.type === "checkbox") el.checked = !!getPath(state, el.dataset.path);
-    else el.value = getPath(state, el.dataset.path) ?? "";
+    if (el.type === "checkbox") {
+      el.checked = !!getPath(state, el.dataset.path);
+      if (el.dataset.path.endsWith(".merge_up")) updateMergeRowClass(el);
+    } else el.value = getPath(state, el.dataset.path) ?? "";
   }
   for (const el of fields) {
     if (el.tagName === "TEXTAREA") autosize(el);
@@ -97,6 +104,7 @@ for (const el of fields) {
     if (el.tagName === "TEXTAREA") autosize(el);
     if (el.dataset.path === "display.four_color") applyFourColor();
     if (el.dataset.path === "display.font_mode") updateFontScaleUI();
+    if (el.dataset.path.endsWith(".merge_up")) updateMergeRowClass(el);
     if (exactMode) setLiveMode();
     schedulePreview();
     scheduleAutosave();
