@@ -176,6 +176,19 @@
         <div class="grid">
           <label>Sidmarginal (mm)<input type="number" id="impPageMargin" value="5" min="0" max="15" step="0.5"></label>
         </div>
+        <div class="grid">
+          <label>Exemplar per ark
+            <select id="impCopies">
+              <option value="2same">Två likadana</option>
+              <option value="1">Ett exemplar</option>
+              <option value="2diff">Två olika (välj nedre)</option>
+            </select>
+          </label>
+          <label id="impSecondDeclWrap" hidden>Nedre radens deklaration
+            <select id="impSecondDecl"><option value="">Välj deklaration...</option></select>
+          </label>
+        </div>
+        <small class="hint">Styr bara genererad PDF/exakt-PDF - förhandsvisningen ovan visar alltid en deklarations fyra paneler. "Ett exemplar" lämnar nedre raden tom. "Två olika" kräver minst en annan sparad deklaration.</small>
         <small class="hint">Bindningskanten styr både bindningsmarginal och "Korta kort 1": bindningsmarginalen skjuter in innehållet från bindningskanten, och trimmen hamnar på motsatt (öppnings-)kant - så plastspiralen inte skymmer text och kort 1 kortas på rätt sida.</small>
         <small class="hint">Sidmarginal 0 = marginalfritt (kräver skrivare som klarar det) - korten blir då äkta A6. Skriv alltid ut i 100%/verklig storlek (INTE "Anpassa till papper"), annars blir kortformatet fel.</small>
         <small class="hint">Testa vändningen fysiskt: skriv ut dubbelsidigt, håll mot ljus - baksidorna ska ligga rakt bakom framsidorna. Justera annars kryssrutorna ovan.</small>

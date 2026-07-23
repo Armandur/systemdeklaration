@@ -245,10 +245,16 @@ def _mirror_lr(edge: str) -> str:
 # imp["trim_card"], default 1: omslag + öppningsbud).
 # En A4 (stående, 2x2) rymmer TVÅ exemplar: en rad per exemplar, kort 1 i
 # vänsterkolumnen, kort 2 i högerkolumnen. Baksidan speglas efter duplex-läge.
+# TASK-263: varje slot får en "row" (0=övre exemplaret, 1=nedre) så
+# render_sheet_html kan välja RÄTT deklaration och RÄTT autofit-skalor per
+# rad (två likadana / ett exemplar / två olika, se copies/d2 nedan). Vid
+# imp["copies"] == 1 markeras rad 1-slotarna "blank" (renderas som tomma
+# paneler) i stället för att bära ett kind.
 def _build_slots(imp: dict) -> tuple[list, list]:
     trim = imp["trim_first_mm"] if imp.get("trim_first_mm") else 0
     edge = imp.get("binding_edge", "left")
     trim_card = imp.get("trim_card", 1)
+    copies = imp.get("copies", 2) or 2
 
     def _trim_for(kind: str) -> float:
         if trim_card == 2:
@@ -261,13 +267,13 @@ def _build_slots(imp: dict) -> tuple[list, list]:
     front_trim_side = _opposite(edge)
     # Framsida, radvis: [kort1=omslag, kort2=försvar] x 2 exemplar.
     front = [
-        {"kind": "cover", "trim": _trim_for("cover"), "rot": False,
+        {"kind": "cover", "row": 0, "trim": _trim_for("cover"), "rot": False,
          "gutter": front_gutter, "trim_side": front_trim_side},
-        {"kind": "defense", "trim": _trim_for("defense"), "rot": False,
+        {"kind": "defense", "row": 0, "trim": _trim_for("defense"), "rot": False,
          "gutter": front_gutter, "trim_side": front_trim_side},
-        {"kind": "cover", "trim": _trim_for("cover"), "rot": False,
+        {"kind": "cover", "row": 1, "trim": _trim_for("cover"), "rot": False,
          "gutter": front_gutter, "trim_side": front_trim_side},
-        {"kind": "defense", "trim": _trim_for("defense"), "rot": False,
+        {"kind": "defense", "row": 1, "trim": _trim_for("defense"), "rot": False,
          "gutter": front_gutter, "trim_side": front_trim_side},
     ]
     # Baksidorna som ska ligga bakom: kort1->öppningsbud, kort2->utspel.
@@ -287,20 +293,35 @@ def _build_slots(imp: dict) -> tuple[list, list]:
     # separat. Utanför denna task.
     back_gutter = _mirror_lr(edge)
     back_trim_side = _mirror_lr(_opposite(edge))
-    back = [{"kind": k, "trim": _trim_for(k), "rot": rot,
-             "gutter": back_gutter, "trim_side": back_trim_side} for k in base]
+    back_rows = [0, 0, 1, 1]
+    back = [{"kind": k, "row": r, "trim": _trim_for(k), "rot": rot,
+             "gutter": back_gutter, "trim_side": back_trim_side}
+            for k, r in zip(base, back_rows)]
     if rot:
-        # Kortsidesvändning: hela baksidan roteras, vänd ordningen.
+        # Kortsidesvändning: hela baksidan roteras, vänd ordningen. "row"
+        # följer med varje dict, så den fysiska 180°-vändningen (som byter
+        # vilken innehålls-rad som hamnar överst) återspeglas korrekt.
         back = list(reversed(back))
+
+    if copies == 1:
+        # Ett exemplar: rad 1 (nedre) ska lämnas tom, inte upprepa exemplar 1.
+        for s in front + back:
+            if s["row"] == 1:
+                s["blank"] = True
+                s["trim"] = 0
+
     return front, back
 
 
-def render_sheet_html(d: dict, imposition: dict | None = None) -> str:
+def render_sheet_html(d: dict, imposition: dict | None = None,
+                      d2: dict | None = None) -> str:
     imp = {"back_swap": True, "back_rotate": False, "trim_first_mm": 4,
            "trim_card": 1, "cut_marks": True, "center_lines": True,
-           "binding_margin_mm": 0, "binding_edge": "left", "page_margin_mm": 5}
+           "binding_margin_mm": 0, "binding_edge": "left", "page_margin_mm": 5,
+           "copies": 2}
     if imposition:
         imp.update(imposition)
+    copies = imp.get("copies", 2) or 2
     front, back = _build_slots(imp)
     # Sidmarginalen styr paneldimensionerna direkt: vid margin=0 blir varje
     # panel äkta A6 (105x148.5mm) och 2x2 fyller hela A4 marginalfritt.
@@ -338,13 +359,34 @@ def render_sheet_html(d: dict, imposition: dict | None = None) -> str:
         fit_w -= edge_loss
     else:
         fit_h -= edge_loss
-    panel_scales, opening_row_fill = _server_autofit(d, fit_w, fit_h, logo_src)
+
+    # TASK-263: rad 0 (övre) är alltid "d". Rad 1 (nedre) är "d2" bara i
+    # två-olika-läget (copies==2 och d2 angiven) - annars samma "d" som
+    # rad 0 (två likadana), eller irrelevant (blankad, ett exemplar).
+    # Autofit (TASK-327) mäts EXAKT per deklaration - körs en andra gång för
+    # d2 bara när den faktiskt används (kostar extra WeasyPrint-mätningar,
+    # men bara i PDF/exakt-PDF-läget för två-olika, aldrig i live-previewen).
+    use_d2 = copies == 2 and bool(d2)
+    scales0, rf0 = _server_autofit(d, fit_w, fit_h, logo_src)
+    if use_d2:
+        logo_src2 = _resolve_logo(d2)
+        scales1, rf1 = _server_autofit(d2, fit_w, fit_h, logo_src2)
+    else:
+        logo_src2 = logo_src
+        scales1, rf1 = scales0, rf0
+
+    row_decls = {0: d, 1: (d2 if use_d2 else d)}
+    row_scales = {0: scales0, 1: scales1}
+    row_fills = {0: rf0, 1: rf1}
+    row_logo = {0: logo_src, 1: logo_src2}
+
     tmpl = _env.get_template("sheet.html")
     return tmpl.render(d=d, imp=imp, front_slots=front, back_slots=back,
                        logo_src=logo_src, print_css=_print_css(),
                        page_margin_mm=margin, content_w=content_w, content_h=content_h,
-                       panel_w=panel_w, panel_h=panel_h, panel_scales=panel_scales,
-                       opening_row_fill=opening_row_fill)
+                       panel_w=panel_w, panel_h=panel_h,
+                       row_decls=row_decls, row_scales=row_scales,
+                       row_fills=row_fills, row_logo=row_logo)
 
 
 def render_preview_html(d: dict) -> str:
@@ -354,20 +396,21 @@ def render_preview_html(d: dict) -> str:
                        panel_scales=_panel_scales(d))
 
 
-def render_pdf(d: dict, imposition: dict | None = None) -> bytes:
+def render_pdf(d: dict, imposition: dict | None = None,
+              d2: dict | None = None) -> bytes:
     from weasyprint import HTML
-    html = render_sheet_html(d, imposition)
+    html = render_sheet_html(d, imposition, d2)
     return HTML(string=html, base_url=str(config.BASE_DIR)).write_pdf()
 
 
 def render_pdf_page_pngs(d: dict, imposition: dict | None = None,
-                         dpi: int = 120) -> list[bytes]:
+                         d2: dict | None = None, dpi: int = 120) -> list[bytes]:
     """Rendera PDF:en och rastrera varje sida till PNG (via pdftoppm) så UI:t
     kan visa exakt vad som skrivs ut. WeasyPrint 69 saknar egen PNG-utmatning."""
     import os
     import subprocess
     import tempfile
-    pdf = render_pdf(d, imposition)
+    pdf = render_pdf(d, imposition, d2)
     with tempfile.TemporaryDirectory() as tmp:
         pdf_path = os.path.join(tmp, "sheet.pdf")
         with open(pdf_path, "wb") as f:

@@ -12,11 +12,16 @@
 <body class="{% if d.display and d.display.four_color %}fourcolor{% endif %}">
 {% import "panels/_macros.html" as p %}
 
-{% macro render_kind(kind) %}
-  {%- if kind == 'cover' -%}{{ p.panel_cover(d, logo_src, panel_scales.cover) }}
-  {%- elif kind == 'opening' -%}{{ p.panel_opening(d, panel_scales.opening, opening_row_fill) }}
-  {%- elif kind == 'defense' -%}{{ p.panel_defense(d, panel_scales.defense) }}
-  {%- elif kind == 'leads' -%}{{ p.panel_leads(d, panel_scales.leads) }}
+{# TASK-263: varje slot bär "row" (0=övre exemplaret, 1=nedre) - vilken
+   deklaration/skala/logga som ska användas slås upp per rad via
+   row_decls/row_scales/row_fills/row_logo (skickade från render_sheet_html). #}
+{% macro render_kind(s) %}
+  {% set dd = row_decls[s.row] %}
+  {% set scale = row_scales[s.row][s.kind] %}
+  {%- if s.kind == 'cover' -%}{{ p.panel_cover(dd, row_logo[s.row], scale) }}
+  {%- elif s.kind == 'opening' -%}{{ p.panel_opening(dd, scale, row_fills[s.row]) }}
+  {%- elif s.kind == 'defense' -%}{{ p.panel_defense(dd, scale) }}
+  {%- elif s.kind == 'leads' -%}{{ p.panel_leads(dd, scale) }}
   {%- endif -%}
 {% endmacro %}
 
@@ -33,7 +38,11 @@
 #}
 {% macro slot(s, cut=True, idx=0) %}
   <div class="slot {% if s.rot %}rot180{% endif %}"{% if imp.binding_margin_mm %} style="--gutter-{{ s.gutter }}: {{ imp.binding_margin_mm }}mm"{% endif %}>
-    {{ render_kind(s.kind) }}
+    {% if s.blank %}
+      <div class="panel"></div>
+    {% else %}
+      {{ render_kind(s) }}
+    {% endif %}
     {% if cut %}
       {% if idx == 1 %}
         {# Yttre hörn uppe vänster #}

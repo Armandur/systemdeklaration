@@ -177,6 +177,7 @@ for (const btn of document.querySelectorAll(".fmtbtn")) {
 // ---- imposition ----
 function imposition() {
   const pageMargin = Number(document.getElementById("impPageMargin").value);
+  const copiesMode = document.getElementById("impCopies").value; // "2same" | "1" | "2diff"
   return {
     back_swap: document.getElementById("impSwap").checked,
     back_rotate: document.getElementById("impRotate").checked,
@@ -187,13 +188,42 @@ function imposition() {
     binding_margin_mm: Number(document.getElementById("impBinding").value) || 0,
     binding_edge: document.getElementById("impBindEdge").value,
     page_margin_mm: Number.isNaN(pageMargin) ? 5 : pageMargin,
+    copies: copiesMode === "1" ? 1 : 2,
   };
 }
+// ---- 263: nedre radens deklaration i "två olika"-läget - hämtas separat
+// (payload2, inte del av imposition()) och cachas per valt id så att bara
+// bytet av val gör en ny nätverksrunda. ----
+let secondDeclCache = { id: null, payload: null };
+async function getPayload2() {
+  const mode = document.getElementById("impCopies").value;
+  if (mode !== "2diff") return null;
+  const id = document.getElementById("impSecondDecl").value;
+  if (!id) return null;
+  if (secondDeclCache.id === id) return secondDeclCache.payload;
+  const d = await apiFetch(`/api/declarations/${id}`);
+  secondDeclCache = { id, payload: d.payload };
+  return secondDeclCache.payload;
+}
+function updateImpCopiesUI() {
+  const mode = document.getElementById("impCopies").value;
+  document.getElementById("impSecondDeclWrap").hidden = mode !== "2diff";
+}
+document.getElementById("impCopies").addEventListener("change", updateImpCopiesUI);
+updateImpCopiesUI();
+
 // ---- 304: signatur av state+imposition för att undvika onödig PDF-generering ----
-const sig = () => JSON.stringify({ p: state, i: imposition() });
+// copies (1 vs 2) ingår redan i imposition(), men "2same" och "2diff" ger
+// samma copies-värde - läget och vald andra-deklaration måste läggas till
+// separat, annars invalideras inte cachen vid byte mellan dem.
+const sig = () => JSON.stringify({
+  p: state, i: imposition(),
+  copiesMode: document.getElementById("impCopies").value,
+  secondDeclId: document.getElementById("impSecondDecl").value,
+});
 
 const scheduleExact = debounce(() => { if (exactMode) refreshExact(); }, 400);
-for (const id of ["impSwap", "impRotate", "impTrim", "impTrimCard", "impCut", "impCenter", "impBinding", "impBindEdge", "impPageMargin"]) {
+for (const id of ["impSwap", "impRotate", "impTrim", "impTrimCard", "impCut", "impCenter", "impBinding", "impBindEdge", "impPageMargin", "impCopies", "impSecondDecl"]) {
   const el = document.getElementById(id);
   el.addEventListener("input", scheduleExact);
   el.addEventListener("change", scheduleExact);
@@ -323,9 +353,10 @@ async function refreshExact() {
   const spin = document.getElementById("exactSpin");
   spin.hidden = false;
   try {
+    const payload2 = await getPayload2();
     const res = await apiFetch("/api/pdf-preview", {
       method: "POST",
-      body: JSON.stringify({ payload: state, imposition: imposition() }),
+      body: JSON.stringify({ payload: state, imposition: imposition(), payload2 }),
     });
     const html = await res.text();
     previewFrame.srcdoc = html;
@@ -393,9 +424,10 @@ document.getElementById("btnPdf").addEventListener("click", async () => {
   const spin = document.getElementById("pdfSpin");
   spin.hidden = false;
   try {
+    const payload2 = await getPayload2();
     const res = await fetch("/api/pdf", {
       method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ payload: state, imposition: imposition(),
+      body: JSON.stringify({ payload: state, imposition: imposition(), payload2,
         name: document.getElementById("decName").value || "systemdeklaration" }),
     });
     if (!res.ok) throw new Error(await res.text());
@@ -462,6 +494,12 @@ async function refreshList(selectId) {
   sel.innerHTML = '<option value="">Sparade...</option>' +
     list.map((d) => `<option value="${d.id}">${d.name}</option>`).join("");
   if (selectId) sel.value = String(selectId);
+  // ---- 263: samma lista i "två olika"-valet av nedre radens deklaration ----
+  const sel2 = document.getElementById("impSecondDecl");
+  const prev2 = sel2.value;
+  sel2.innerHTML = '<option value="">Välj deklaration...</option>' +
+    list.map((d) => `<option value="${d.id}">${d.name}</option>`).join("");
+  if (prev2) sel2.value = prev2;
 }
 
 document.getElementById("btnSave").addEventListener("click", async () => {

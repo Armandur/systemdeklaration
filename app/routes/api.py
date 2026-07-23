@@ -56,7 +56,8 @@ def pdf_preview(body: dict = Body(...)):
     import base64
     payload = body.get("payload") or {}
     imposition = body.get("imposition") or None
-    pages = render.render_pdf_page_pngs(payload, imposition)
+    payload2 = body.get("payload2") or None
+    pages = render.render_pdf_page_pngs(payload, imposition, payload2)
     labels = ["Framsida", "Baksida"]
     imgs = "".join(
         f'<figure><img src="data:image/png;base64,{base64.b64encode(p).decode()}">'
@@ -78,8 +79,9 @@ def pdf_preview(body: dict = Body(...)):
 def pdf(body: dict = Body(...)):
     payload = body.get("payload") or {}
     imposition = body.get("imposition") or None
+    payload2 = body.get("payload2") or None
     name = (body.get("name") or "systemdeklaration").strip() or "systemdeklaration"
-    pdf_bytes = render.render_pdf(payload, imposition)
+    pdf_bytes = render.render_pdf(payload, imposition, payload2)
     safe = "".join(c for c in name if c.isalnum() or c in " -_").strip() or "systemdeklaration"
     return Response(
         content=pdf_bytes,
