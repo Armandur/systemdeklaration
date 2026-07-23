@@ -402,6 +402,51 @@ document.getElementById("btnPdf").addEventListener("click", async () => {
   }
 });
 
+// ---- 264: exportera/importera deklaration som JSON-fil (klientsidig backup) ----
+function sanitizeFilename(name) {
+  return name.replace(/[^a-zA-Z0-9\- _]/g, "").trim() || "systemdeklaration";
+}
+document.getElementById("btnExport").addEventListener("click", () => {
+  const name = document.getElementById("decName").value.trim() || "systemdeklaration";
+  const data = JSON.stringify({ name, payload: state }, null, 2);
+  const blob = new Blob([data], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = sanitizeFilename(name) + ".json";
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast("Exporterad");
+});
+document.getElementById("btnImport").addEventListener("click", () => {
+  document.getElementById("importFile").click();
+});
+document.getElementById("importFile").addEventListener("change", async (e) => {
+  const input = e.target;
+  const file = input.files && input.files[0];
+  if (!file) return;
+  try {
+    const obj = JSON.parse(await file.text());
+    if (typeof obj !== "object" || obj === null) throw new Error("ogiltigt format");
+    const hasPayload = Object.prototype.hasOwnProperty.call(obj, "payload");
+    const payload = hasPayload ? obj.payload : obj;
+    if (typeof payload !== "object" || payload === null) throw new Error("ogiltigt format");
+    currentId = null;
+    state = mergeWithEmpty(payload);
+    document.getElementById("decName").value = hasPayload ? (obj.name || "") : "";
+    document.getElementById("decLoad").value = "";
+    if (exactMode) setLiveMode();
+    stateToForm();
+    renderPreview();
+    persistLocal();
+    showToast("Importerad");
+  } catch {
+    showToast("Ogiltig JSON-fil", "err");
+  } finally {
+    input.value = "";
+  }
+});
+
 // ---- spara / ladda / ta bort / ny ----
 async function refreshList(selectId) {
   const list = await apiFetch("/api/declarations");
