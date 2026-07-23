@@ -19,15 +19,14 @@ docker login ghcr.io -u <användarnamn>
 docker push ghcr.io/armandur/systemdeklaration:latest
 ```
 
-## Viktig not: gör GHCR-paketet publikt
+## Paketsynlighet
 
-Första push:en till GHCR skapar paketet som **privat by default**. Unraid
-kan då inte dra imagen. Antingen:
-
-- gör paketet publikt under Package settings på GitHub (repo -> Packages
-  -> systemdeklaration -> Package settings -> Change visibility), eller
-- lägg in pull-credentials (personal access token med `read:packages`)
-  i Unraids Docker-inställningar för registret.
+När repot är publikt ärver GHCR-paketet i regel den publika synligheten, så
+imagen är direkt dragbar av Unraid utan credentials. Är paketet ändå privat
+(t.ex. om repot varit privat): gör det publikt under Package settings
+(GitHub -> Packages -> systemdeklaration -> Package settings -> Change
+visibility), eller lägg pull-credentials (PAT med `read:packages`) i Unraids
+registry-inställningar.
 
 ## Unraid - Add Container
 
