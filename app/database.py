@@ -26,7 +26,7 @@ def get_conn():
 
 
 def init_db() -> None:
-    config.DATA_DIR.mkdir(parents=True, exist_ok=True)
+    config.DB_PATH.parent.mkdir(parents=True, exist_ok=True)
     with get_conn() as conn:
         conn.execute(
             """

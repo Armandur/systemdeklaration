@@ -1,10 +1,13 @@
 """Konstanter, det fasta SBF-skelettet och hjälpfunktioner för färgglyfer."""
+import os
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent
 ROOT_DIR = BASE_DIR.parent
 DATA_DIR = ROOT_DIR / "data"
-DB_PATH = DATA_DIR / "systemdeklaration.db"
+# Override-bar via env så en Docker-volym kan monteras på valfri katalog
+# (t.ex. /data i containern) utan att röra DATA_DIR (dit sample.json hör).
+DB_PATH = Path(os.environ.get("SYSDEK_DB_PATH") or (DATA_DIR / "systemdeklaration.db"))
 
 # Färgsymboler. Varje färg får en egen klass (suit-c/d/h/s); CSS avgör om
 # tvåfärgs- eller fyrfärgspalett gäller (styrt av .fourcolor på behållaren).
