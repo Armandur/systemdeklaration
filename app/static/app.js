@@ -542,6 +542,19 @@ document.getElementById("btnNew").addEventListener("click", () => {
   renderPreview();
 });
 
+document.getElementById("btnDup").addEventListener("click", () => {
+  currentId = null;
+  state = structuredClone(state);
+  const currentName = document.getElementById("decName").value.trim() || "Namnlös";
+  document.getElementById("decName").value = currentName + " (kopia)";
+  document.getElementById("decLoad").value = "";
+  if (exactMode) setLiveMode();
+  stateToForm();
+  persistLocal();
+  renderPreview();
+  showToast("Duplicerad - spara för att behålla");
+});
+
 document.getElementById("btnDelete").addEventListener("click", async () => {
   if (!currentId) { showToast("Ingen sparad deklaration vald", "err"); return; }
   if (!confirm("Ta bort denna deklaration?")) return;

@@ -1,7 +1,16 @@
 // Delade hjälpare.
+function _getCookie(name) {
+  const match = document.cookie.match(new RegExp("(?:^|; )" + name + "=([^;]*)"));
+  return match ? decodeURIComponent(match[1]) : null;
+}
+
 export async function apiFetch(url, opts = {}) {
   const res = await fetch(url, {
-    headers: { "Content-Type": "application/json", ...(opts.headers || {}) },
+    headers: {
+      "Content-Type": "application/json",
+      "X-CSRF-Token": _getCookie("csrftoken") || "",
+      ...(opts.headers || {}),
+    },
     ...opts,
   });
   if (!res.ok) {
